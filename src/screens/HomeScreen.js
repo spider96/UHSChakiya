@@ -1,4 +1,8 @@
-import React from 'react';
+import React , {useState} from 'react';
+import styles from '../style/HomeStyles';
+import Header from '../screens/Header';
+import HomeContent from  "../screens/HomeContent";
+import SideMenu from '../components/SideMenu';
 import {
   StyleSheet,
   View,
@@ -21,176 +25,41 @@ import {
   CheckCircle2 
 } from 'lucide-react-native';
 
-// --- UI SUB-COMPONENTS ---
-const NoticeItem = ({ text }) => (
-  <View style={styles.noticeItem}>
-    <View style={styles.bullet} />
-    <Text style={styles.noticeText}>{text}</Text>
-  </View>
-);
+export default function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeScreen, setActiveScreen] = useState('HOME');
 
-const GridItem = ({ icon, label }) => (
-  <TouchableOpacity style={styles.gridBox}>
-    <View style={styles.iconWrapper}>{icon}</View>
-    <Text style={styles.gridLabel}>{label}</Text>
-  </TouchableOpacity>
-);
+  const renderActiveScreen = () => {
+    switch (activeScreen) {
+      case 'HOME': return <HomeContent />;
+      case 'TEACHERS': return <FacultyContent />;
+      // Add more screens here
+      default: return <HomeContent />;
+    }
+  };
 
-const FacultyCard = ({ name, role }) => (
-  <View style={styles.fCard}>
-    <View style={styles.fImagePlaceholder} />
-    <View style={styles.fInfo}>
-      <Text style={styles.fName}>{name}</Text>
-      <Text style={styles.fRole}>{role}</Text>
-    </View>
-  </View>
-);
-
-// --- MAIN SCREEN COMPONENT ---
-const HomeScreen = () => {
   return (
     <View style={styles.mainContainer}>
-      <StatusBar barStyle="light-content" backgroundColor="#004a99" />
+      {/* HEADER stays here, it will not re-render when we change content */}
+      <Header onMenuPress={() => setIsMenuOpen(true)} />
 
-      {/* FIXED HEADER: Removed manual padding to prevent layout crash */}
-      <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-        <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <View style={styles.logoContainer}>
-              <View style={styles.logoPlaceholder}>
-                <Text style={{fontSize: 8, color: '#004a99', fontWeight: 'bold'}}>LOGO</Text>
-              </View>
-              <View style={styles.headerTextContainer}>
-                <Text style={styles.schoolName}>UCHCH MADHYAMIK</Text>
-                <Text style={styles.schoolName}>VIDYALAYA CHAKIYA</Text>
-                <Text style={styles.subHeader}>Affiliated to BSEB</Text>
-              </View>
-            </View>
-            <TouchableOpacity>
-              <Menu color="white" size={28} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
+      {/* CONTENT AREA is the only part that swaps or scrolls */}
+      <View style={styles.contentArea}>
+        <HomeContent />
+      </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
-        
-        {/* 1. Hero Banner */}
-        <View style={styles.heroContainer}>
-          <View style={styles.heroPlaceholder}>
-            <Text style={{color: '#fff'}}>Hero Image (Students Saluting)</Text>
-          </View>
-        </View>
+      {/* SideMenu Modal will go here */}
 
-        {/* 2. Notice Board */}
-        <View style={styles.card}>
-          <View style={styles.noticeHeader}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Megaphone color="white" size={18} />
-              <Text style={styles.noticeTitle}>Notice Board</Text>
-            </View>
-            <TouchableOpacity style={styles.viewAllBtnHeader}>
-              <Text style={styles.viewAllTextHeader}>View All</Text>
-              <ChevronRight color="#0056b3" size={14} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.noticeList}>
-            <NoticeItem text="Class 12 Exam Form Submission 12 Sep 2021" />
-            <NoticeItem text="Holiday Notice: Durga Puja 18 Oct 2021" />
-            <TouchableOpacity style={styles.viewAllInline}>
-              <Text style={styles.viewAllInlineText}>View All</Text>
-              <ChevronRight color="#0056b3" size={14} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* 3. Quick Links Grid */}
-        <View style={styles.gridContainer}>
-          <GridItem icon={<Info color="#0056b3" size={30} />} label="About Us" />
-          <GridItem icon={<BookOpen color="#0056b3" size={30} />} label="Courses" />
-          <GridItem icon={<Users color="#0056b3" size={30} />} label="Faculty" />
-          <GridItem icon={<ImageIcon color="#0056b3" size={30} />} label="Gallery" />
-        </View>
-
-        {/* 4. About Us Section */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitleMain}>About Us</Text>
-          <View style={styles.titleUnderline} />
-          <Text style={styles.sectionPara}>
-            UCHCH MADHYAMIK VIDYALAYA CHAKIYA is a reputed government institution committed to excellence.
-          </Text>
-          <TouchableOpacity style={styles.readMore}>
-            <Text style={styles.readMoreText}>Read More</Text>
-            <ChevronRight color="#0056b3" size={14} />
-          </TouchableOpacity>
-        </View>
-
-        {/* 5. Our Faculty Section */}
-        <View style={styles.facultyHeader}>
-          <Text style={styles.sectionTitleMain}>Our Faculty</Text>
-        </View>
-        
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.facultyScroll}>
-          <FacultyCard name="Dr. A.K. Sharma" role="Physics | 15 Years" />
-          <FacultyCard name="Mrs. S. Verma" role="Maths | 12 Years" />
-          <FacultyCard name="Mr. R.K. Singh" role="English | 10 Years" />
-        </ScrollView>
-
-        <View style={{height: 40}} />
-      </ScrollView>
+      <SideMenu 
+        isOpen={isMenuOpen} 
+        onClose={() => setIsMenuOpen(false)} 
+        onNavigate={(screen) => {
+          setTimeout(() => {
+          setActiveScreen(screen);}, 500);
+          setIsMenuOpen(false);
+        }}
+        userRole="admin" 
+      />
     </View>
   );
-};
-
-// --- ROOT EXPORT ---
-export default function App() {
-  return (
-    <SafeAreaProvider>
-      <HomeScreen />
-    </SafeAreaProvider>
-  );
 }
-
-// --- STYLES ---
-const styles = StyleSheet.create({
-  mainContainer: { flex: 1, backgroundColor: '#f0f2f5' },
-  headerSafeArea: { backgroundColor: '#004a99' },
-  header: { backgroundColor: '#004a99', padding: 15 },
-  headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  logoContainer: { flexDirection: 'row', alignItems: 'center' },
-  logoPlaceholder: { width: 45, height: 45, borderRadius: 23, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center' },
-  headerTextContainer: { marginLeft: 10 },
-  schoolName: { color: 'white', fontWeight: 'bold', fontSize: 14 },
-  subHeader: { color: 'white', fontSize: 10, marginTop: 2 },
-  scrollContainer: { flex: 1 },
-  heroContainer: { height: 200, width: '100%' },
-  heroPlaceholder: { flex: 1, backgroundColor: '#555', justifyContent: 'center', alignItems: 'center' },
-  card: { margin: 12, backgroundColor: 'white', borderRadius: 8, elevation: 3, overflow: 'hidden' },
-  noticeHeader: { backgroundColor: '#f38120', padding: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  noticeTitle: { color: 'white', fontWeight: 'bold', marginLeft: 8, fontSize: 16 },
-  viewAllBtnHeader: { backgroundColor: 'white', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4, flexDirection: 'row', alignItems: 'center' },
-  viewAllTextHeader: { color: '#0056b3', fontWeight: 'bold', fontSize: 12 },
-  noticeList: { padding: 15 },
-  noticeItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
-  bullet: { width: 5, height: 5, borderRadius: 3, backgroundColor: '#f38120', marginRight: 10 },
-  noticeText: { fontSize: 13, color: '#444' },
-  viewAllInline: { alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center' },
-  viewAllInlineText: { color: '#0056b3', fontWeight: 'bold', fontSize: 14 },
-  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingHorizontal: 12 },
-  gridBox: { width: '23%', backgroundColor: 'white', borderRadius: 8, padding: 10, alignItems: 'center', elevation: 2, marginBottom: 10 },
-  iconWrapper: { marginBottom: 5 },
-  gridLabel: { fontSize: 10, textAlign: 'center', color: '#333', fontWeight: '600' },
-  sectionCard: { margin: 12, backgroundColor: 'white', padding: 15, borderRadius: 8, elevation: 2 },
-  sectionTitleMain: { fontSize: 18, fontWeight: 'bold', color: '#004a99' },
-  titleUnderline: { height: 1, backgroundColor: '#eee', marginVertical: 10 },
-  sectionPara: { fontSize: 14, color: '#555', lineHeight: 22 },
-  readMore: { alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', marginTop: 10 },
-  readMoreText: { color: '#0056b3', fontWeight: 'bold' },
-  facultyHeader: { paddingHorizontal: 15, marginTop: 10 },
-  facultyScroll: { paddingLeft: 12, marginTop: 10 },
-  fCard: { width: 150, marginRight: 15, borderRadius: 8, overflow: 'hidden', backgroundColor: 'white', elevation: 3, marginBottom: 10 },
-  fImagePlaceholder: { height: 130, backgroundColor: '#ddd' },
-  fInfo: { backgroundColor: '#004a99', padding: 10 },
-  fName: { color: 'white', fontSize: 13, fontWeight: 'bold' },
-  fRole: { color: '#ddd', fontSize: 11 }
-});
