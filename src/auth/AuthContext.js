@@ -1,31 +1,31 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { getToken, saveToken, removeToken } from '../utils/storage';
+import { getUser, saveUser, removeUser } from '../utils/storage';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getToken().then(t => {
-      setToken(t);
+    getUser().then(user => {
+      setUser(user);
       setLoading(false);
     });
   }, []);
 
-  const login = async jwt => {
-    await saveToken(jwt);
-    setToken(jwt);
+  const login = async (userData) => {
+    await saveUser(userData);
+    setUser(userData);
   };
 
   const logout = async () => {
-    await removeToken();
-    setToken(null);
+    await removeUser();
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

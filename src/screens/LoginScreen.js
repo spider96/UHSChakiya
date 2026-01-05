@@ -5,14 +5,16 @@ import Button from '../components/Button';
 import { loginApi } from '../auth/authService';
 import { AuthContext } from '../auth/AuthContext';
 
-export default function LoginScreen() {
+export default function LoginScreen({onNavigate,onLoginSuccess}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
-    const token = await loginApi(username, password);
-    await login(token);
+    const userData = await loginApi(username, password);
+    await login(userData);
+    onLoginSuccess(userData);
+    onNavigate('HOME');
   };
 
   return (
@@ -21,5 +23,5 @@ export default function LoginScreen() {
       <Input placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
       <Button title="Login" onPress={handleLogin} />
     </View>
-  );
+  );  
 }
