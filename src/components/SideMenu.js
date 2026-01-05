@@ -1,20 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { 
-  StyleSheet, View, Text, Modal, Pressable, 
-  Dimensions, TouchableOpacity, ScrollView, Animated 
+import {
+  StyleSheet, View, Text, Modal, Pressable,
+  Dimensions, TouchableOpacity, ScrollView, Animated
 } from 'react-native';
-import { 
-  X, LayoutDashboard, Users, BookOpen, 
-  LogOut, Info, ShieldCheck 
+import {
+  X, LayoutDashboard, Users, BookOpen, GraduationCap,
+  LogOut, Info, ShieldCheck,
+  User
 } from 'lucide-react-native';
+
 
 const { width, height } = Dimensions.get('window');
 const MENU_WIDTH = width * 0.75;
+const USER_NAME = "Sujit Kumar";
 
-const SideMenu = ({ isOpen, onClose, onNavigate, userRole = 'admin' }) => {
+const SideMenu = ({ isOpen, onClose, onNavigate, userRole }) => {
   // 1. Force the initial position to be off-screen (Right)
   const slideAnim = useRef(new Animated.Value(MENU_WIDTH)).current;
-  
+
   // 2. Track internal visibility to prevent "ghosting"
   const [shouldRender, setShouldRender] = useState(isOpen);
 
@@ -52,20 +55,20 @@ const SideMenu = ({ isOpen, onClose, onNavigate, userRole = 'admin' }) => {
         {/* Backdrop Fade logic can be added here if needed */}
         <Pressable style={styles.backdrop} onPress={onClose} />
 
-        <Animated.View 
+        <Animated.View
           style={[
-            styles.menuContent, 
+            styles.menuContent,
             { transform: [{ translateX: slideAnim }] }
           ]}
         >
           <View style={styles.menuHeader}>
             <View style={styles.profileSection}>
               <View style={styles.avatarCircle}>
-                <Text style={styles.avatarText}>{userRole[0].toUpperCase()}</Text>
+                <Text style={styles.avatarText}>{USER_NAME[0].toUpperCase()}</Text>
               </View>
               <View>
-                <Text style={styles.schoolNameSmall}>U.M.V. CHAKIYA</Text>
-                <Text style={styles.roleLabel}>{userRole.toUpperCase()} PORTAL</Text>
+                <Text style={styles.schoolNameSmall}>{USER_NAME}</Text>
+                <Text style={styles.roleLabel}>{userRole.toUpperCase()}</Text>
               </View>
             </View>
             <TouchableOpacity onPress={onClose}>
@@ -74,25 +77,48 @@ const SideMenu = ({ isOpen, onClose, onNavigate, userRole = 'admin' }) => {
           </View>
 
           <ScrollView style={styles.menuList} bounces={false}>
-            <MenuLink icon={<LayoutDashboard color="#004a99" size={22} />} label="Dashboard" onPress={() => onNavigate('HOME')} />
-            <MenuLink icon={<BookOpen color="#004a99" size={22} />} label="Academic Calendar" onPress={() => onNavigate('CALENDAR')} />
 
-            {userRole === 'admin' && (
+            {(userRole === 'GUEST') && (
               <>
+                <MenuLink icon={<Users color="#004a99" size={22} />} label="Login" onPress={() => onNavigate('LOGIN')} />
+              </>
+            )}
+            {(userRole === 'ADMIN' || userRole === 'TEACHER') && (
+              <>
+                <MenuLink icon={<User color="#004a99" size={22} />} label="Profile" onPress={() => onNavigate('PROFILE')} />
+                <MenuLink icon={<BookOpen color="#004a99" size={22} />} label="Academic Report" onPress={() => onNavigate('CALENDAR')} />
                 <View style={styles.divider} />
                 <Text style={styles.sectionLabel}>Management</Text>
-                <MenuLink icon={<Users color="#004a99" size={22} />} label="Teacher Records" onPress={() => onNavigate('TEACHERS')} />
-                <MenuLink icon={<ShieldCheck color="#004a99" size={22} />} label="Fee Reports" onPress={() => onNavigate('FEES')} />
+              </>
+            )}
+
+
+
+            {(userRole === 'ADMIN') && (
+              <>
+                <MenuLink icon={<Users color="#004a99" size={22} />} label="Teacher Dashboard" onPress={() => onNavigate('TEACHERS')} />
+              </>
+            )}
+            {(userRole === 'ADMIN' || userRole === 'TEACHER') && (
+              <>
+                <MenuLink icon={<GraduationCap color="#004a99" size={22} />} label="Student Dashboard" onPress={() => onNavigate('STUDENTS')} />
+                <TouchableOpacity
+                  style={styles.linkItem}
+                  onPress={() => {
+                    /* Add your logout logic here */
+                    console.log("Logged out");
+                    onClose();
+                  }}
+                >
+                  <LogOut color="#d9534f" size={22} />
+                  <Text style={[styles.linkLabel, styles.logoutText]}>Logout</Text>
+                </TouchableOpacity>
+
               </>
             )}
 
             <View style={styles.divider} />
-            <MenuLink icon={<Info color="#004a99" size={22} />} label="Support" onPress={() => onNavigate('SUPPORT')} />
-            
-            <TouchableOpacity style={styles.logoutBtn}>
-              <LogOut color="#d9534f" size={20} />
-              <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
+
           </ScrollView>
         </Animated.View>
       </View>
@@ -110,22 +136,22 @@ const MenuLink = ({ icon, label, onPress }) => (
 const styles = StyleSheet.create({
   container: { flex: 1, flexDirection: 'row', justifyContent: 'flex-end' },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.6)' },
-  menuContent: { 
-    width: MENU_WIDTH, 
-    backgroundColor: 'white', 
-    height: '100%', 
+  menuContent: {
+    width: MENU_WIDTH,
+    backgroundColor: 'white',
+    height: '100%',
     elevation: 10,
     shadowColor: '#000',
     shadowOffset: { width: -3, height: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },
-  menuHeader: { 
-    backgroundColor: '#004a99', 
-    paddingTop: 20, 
-    paddingBottom: 20, 
-    paddingHorizontal: 20, 
-    flexDirection: 'row', 
+  menuHeader: {
+    backgroundColor: '#004a99',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 4,
@@ -139,9 +165,9 @@ const styles = StyleSheet.create({
   menuList: { padding: 15 },
   linkItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 10 },
   linkLabel: { marginLeft: 15, fontSize: 15, color: '#333', fontWeight: '500' },
-  divider: { height: 1, backgroundColor: '#eee', marginVertical: 10 },
+  divider: { height: 1, backgroundColor: '#eee', marginVertical: 6 },
   sectionLabel: { fontSize: 11, color: '#999', marginLeft: 10, marginBottom: 5, fontWeight: 'bold' },
-  logoutBtn: { flexDirection: 'row', alignItems: 'center', padding: 15, marginTop: 20 },
+  logoutBtn: { flexDirection: 'row', alignItems: 'center', padding: 15, marginTop: 5 },
   logoutText: { color: '#d9534f', fontWeight: 'bold', marginLeft: 15 }
 });
 

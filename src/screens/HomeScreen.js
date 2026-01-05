@@ -1,8 +1,12 @@
 import React , {useState} from 'react';
 import styles from '../style/HomeStyles';
 import Header from '../screens/Header';
+import Profile from '../screens/Profile';
+import TeacherDashboard from '../screens/TeacherDashboard';
+import StudentDashboard from '../screens/StudentDashboard';
 import HomeContent from  "../screens/HomeContent";
 import SideMenu from '../components/SideMenu';
+import { USER_ROLES } from '../constants/roles';
 import {
   StyleSheet,
   View,
@@ -29,10 +33,14 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeScreen, setActiveScreen] = useState('HOME');
 
-  const renderActiveScreen = () => {
+  const renderActiveScreen = (activeScreen) => {
     switch (activeScreen) {
       case 'HOME': return <HomeContent />;
-      case 'TEACHERS': return <FacultyContent />;
+      case 'TEACHERS': return <TeacherDashboard />;
+      case 'PROFILE': return <Profile />;
+      case 'TEACHERS': return <TeacherDashboard />;
+      case 'STUDENTS': return <StudentDashboard />;
+    
       // Add more screens here
       default: return <HomeContent />;
     }
@@ -45,7 +53,7 @@ export default function App() {
 
       {/* CONTENT AREA is the only part that swaps or scrolls */}
       <View style={styles.contentArea}>
-        <HomeContent />
+       {renderActiveScreen(activeScreen)}
       </View>
 
       {/* SideMenu Modal will go here */}
@@ -58,7 +66,7 @@ export default function App() {
           setActiveScreen(screen);}, 500);
           setIsMenuOpen(false);
         }}
-        userRole="admin" 
+        userRole= {USER_ROLES.ADMIN}
       />
     </View>
   );
