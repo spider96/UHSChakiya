@@ -1,5 +1,6 @@
-import React, { useEffect, useRef ,useContext} from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { AuthContext } from '../auth/AuthContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   StyleSheet,
@@ -20,6 +21,7 @@ const MENU_WIDTH = width * 0.75;
 
 const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName }) => {
   const slideAnim = useRef(new Animated.Value(MENU_WIDTH)).current;
+  const insets = useSafeAreaInsets();
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const { logout } = useContext(AuthContext);
 
@@ -64,12 +66,13 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
   const firstLetter = safeName[0] ? safeName[0].toUpperCase() : "?";
 
   return (
-    <View 
-      style={[StyleSheet.absoluteFill, { zIndex: 9999 }]} 
+
+    <View
+      style={[StyleSheet.absoluteFill, { zIndex: 9999 }]}
       pointerEvents={pointerEvents}
     >
       {/* 1. Backdrop (Fades in/out) */}
-      <Animated.View 
+      <Animated.View
         style={[styles.backdrop, { opacity: backdropOpacity }]}
       >
         <Pressable style={{ flex: 1 }} onPress={onClose} />
@@ -82,7 +85,7 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
           { transform: [{ translateX: slideAnim }] }
         ]}
       >
-        <View style={styles.menuHeader}>
+        <View style={[styles.menuHeader, { paddingTop: Platform.OS === 'android' ? insets.top + 10 : insets.top }]}>
           <View style={styles.profileSection}>
             <View style={styles.avatarCircle}>
               <Text style={styles.avatarText}>{firstLetter}</Text>
@@ -93,7 +96,7 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
             </View>
           </View>
           <TouchableOpacity 
-            onPress={onClose} 
+            onPress={onClose}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
             <X color="white" size={24} />
@@ -102,29 +105,29 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
 
         <ScrollView style={styles.menuList} bounces={false}>
           {userRole === 'GUEST' ? (
-            <MenuLink 
-              icon={<Users color="#004a99" size={22} />} 
-              label="Login" 
-              onPress={() => onNavigate('LOGIN')} 
+            <MenuLink
+              icon={<Users color="#004a99" size={22} />}
+              label="Login"
+              onPress={() => onNavigate('LOGIN')}
             />
           ) : (
             <>
               <MenuLink icon={<User color="#004a99" size={22} />} label="Profile" onPress={() => onNavigate('PROFILE')} />
               <MenuLink icon={<BookOpen color="#004a99" size={22} />} label="Academic Report" onPress={() => onNavigate('CALENDAR')} />
-              
+
               <View style={styles.divider} />
-              
+
               <Text style={styles.sectionLabel}>Management</Text>
               <MenuLink icon={<GraduationCap color="#004a99" size={22} />} label="Student Dashboard" onPress={() => onNavigate('STUDENTS')} />
-              
+
               {userRole === 'ROLE_ADMIN' && (
                 <MenuLink icon={<Users color="#004a99" size={22} />} label="Teacher Dashboard" onPress={() => onNavigate('TEACHERS')} />
               )}
 
               <View style={styles.divider} />
-              
-              <TouchableOpacity 
-                style={styles.linkItem} 
+
+              <TouchableOpacity
+                style={styles.linkItem}
                 onPress={() => {
                   onClose();
                   setTimeout(onLogout, 400);
@@ -166,7 +169,7 @@ const styles = StyleSheet.create({
   },
   menuHeader: {
     backgroundColor: '#004a99',
-    padding: 20,
+    padding: 31,
     paddingTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import styles from '../style/HomeStyles';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // Screens
 import Header from '../screens/Header';
-import Profile from '../screens/Profile';
+import Profile from '../screens/EditUserProfile';
 import TeacherDashboard from '../screens/TeacherDashboard';
 import StudentDashboard from '../screens/StudentDashboard';
 import HomeContent from "../screens/HomeContent";
@@ -12,7 +13,7 @@ import LoginScreen from '../screens/LoginScreen';
 import SideMenu from '../components/SideMenu';
 
 // Utils
-import { getUser,removeUser } from '../utils/storage';
+import { getUser, removeUser } from '../utils/storage';
 import { USER_ROLES } from '../constants/roles';
 
 export default function App() {
@@ -21,7 +22,7 @@ export default function App() {
   const [activeScreen, setActiveScreen] = useState('HOME');
   const [isLoading, setIsLoading] = useState(true);
 
- useEffect(() => {
+  useEffect(() => {
     const loadData = async () => {
       try {
         const user = await getUser();
@@ -52,7 +53,7 @@ export default function App() {
   const handleNavigation = (screen) => {
     // 1. Start closing the menu
     setIsMenuOpen(false);
-    
+
     // 2. Delay the screen swap slightly so it happens while the menu is sliding
     setTimeout(() => {
       setActiveScreen(screen);
@@ -76,23 +77,27 @@ export default function App() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.mainContainer}>
-        <Header onMenuPress={() => setIsMenuOpen(true)} onNavigate={handleNavigation} />
-        <View style={styles.contentArea}>
-          {renderActiveScreen()}
+    <SafeAreaProvider>
+
+      <View style={{ flex: 1 }}>
+        <View style={styles.mainContainer}>
+          <Header onMenuPress={() => setIsMenuOpen(true)} onNavigate={handleNavigation} />
+          <View style={styles.contentArea}>
+            {renderActiveScreen()}
+          </View>
         </View>
+
+        {/* SideMenu is now OUTSIDE the main container as an overlay */}
+        <SideMenu
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          onNavigate={handleNavigation}
+          onLogout={handleLogout}
+          userRole={currentUser?.role ?? USER_ROLES.GUEST}
+          userName={currentUser?.name ?? "Guest User"}
+        />
       </View>
 
-      {/* SideMenu is now OUTSIDE the main container as an overlay */}
-      <SideMenu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onNavigate={handleNavigation}
-        onLogout={handleLogout}
-        userRole={currentUser?.role ?? USER_ROLES.GUEST}
-        userName={currentUser?.name ?? "Guest User"}
-      />
-    </View>
+    </SafeAreaProvider>
   );
 }
