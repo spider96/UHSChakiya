@@ -6,7 +6,7 @@ import styles from '../style/HomeStyles';
 
 const Header = ({ onMenuPress,onNavigate }) => {
   return (
-    <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
+    <View edges={['top']} >
       <StatusBar barStyle="light-content" backgroundColor="#004a99" />
       <View style={styles.header}>
         <View style={styles.headerTop}>
@@ -31,7 +31,7 @@ const Header = ({ onMenuPress,onNavigate }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

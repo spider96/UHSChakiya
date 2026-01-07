@@ -92,7 +92,7 @@ const ProfileScreen = () => {
   const data = isEditing ? tempProfile : profile;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+ //   <SafeAreaView style={{ flex: 1 }}>
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
@@ -158,7 +158,7 @@ const ProfileScreen = () => {
         </View>
       )}
     </ScrollView>
-    </SafeAreaView>
+  //  </SafeAreaView>
   );
 };
 

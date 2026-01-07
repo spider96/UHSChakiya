@@ -103,7 +103,7 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.menuList} bounces={false}>
+        <ScrollView style={styles.menuList} bounces={true}>
           {userRole === 'GUEST' ? (
             <MenuLink
               icon={<Users color="#004a99" size={22} />}

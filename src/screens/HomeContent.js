@@ -30,7 +30,7 @@ const FacultyCard = ({ name, role }) => (
   </View>
 );
 
-const HomeContent = () => {
+const HomeContent = ({onNavigate}) => {
   return (
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
         
@@ -48,7 +48,7 @@ const HomeContent = () => {
               <Megaphone color="white" size={18} />
               <Text style={styles.noticeTitle}>Notice Board</Text>
             </View>
-            <TouchableOpacity style={styles.viewAllBtnHeader}>
+            <TouchableOpacity style={styles.viewAllBtnHeader} onPress={() => onNavigate('NOTICES')}>
               <Text style={styles.viewAllTextHeader}>View All</Text>
               <ChevronRight color="#0056b3" size={14} />
             </TouchableOpacity>

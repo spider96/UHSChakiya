@@ -8,8 +8,9 @@ import Header from '../screens/Header';
 import Profile from '../screens/EditUserProfile';
 import TeacherDashboard from '../screens/TeacherDashboard';
 import StudentDashboard from '../screens/StudentDashboard';
-import HomeContent from "../screens/HomeContent";
+import HomeContent from '../screens/HomeContent';
 import LoginScreen from '../screens/LoginScreen';
+import NoticeScreen from '../screens/NoticeScreen';
 import SideMenu from '../components/SideMenu';
 
 // Utils
@@ -67,19 +68,20 @@ export default function App() {
 
   const renderActiveScreen = () => {
     switch (activeScreen) {
-      case 'HOME': return <HomeContent />;
+      case 'HOME': return <HomeContent onNavigate={handleNavigation} />;
       case 'PROFILE': return <Profile />;
       case 'TEACHERS': return <TeacherDashboard />;
       case 'STUDENTS': return <StudentDashboard />;
+      case 'NOTICES': return <NoticeScreen  />;
       case 'LOGIN': return <LoginScreen onNavigate={handleNavigation} onLoginSuccess={handleLoginSuccess} />;
-      default: return <HomeContent />;
+      default: return <HomeContent  onNavigate={handleNavigation}  />;
     }
   };
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={styles.headerSafeArea}>
 
-      <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }} >
         <View style={styles.mainContainer}>
           <Header onMenuPress={() => setIsMenuOpen(true)} onNavigate={handleNavigation} />
           <View style={styles.contentArea}>
@@ -96,7 +98,7 @@ export default function App() {
           userRole={currentUser?.role ?? USER_ROLES.GUEST}
           userName={currentUser?.name ?? "Guest User"}
         />
-      </View>
+      </SafeAreaView>
 
     </SafeAreaProvider>
   );
