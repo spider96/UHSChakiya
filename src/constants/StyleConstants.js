@@ -1,0 +1,8 @@
+export const COLORS = {
+  PRIMARY: '#1976D2',
+  SECONDARY: '#1976D2',
+  ADMIN: '#FF5733',
+  TEACHER: '#33C1FF',
+  VIEWER: '#75FF33',
+  GUEST: '#CCCCCC',
+};

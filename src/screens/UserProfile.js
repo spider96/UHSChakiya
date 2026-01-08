@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from '../style/UserProfileStyles';
+import SubHeader from '../components/SubHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
@@ -13,7 +14,6 @@ import {
 
 const AnimatedDivider = ({ active }) => {
   const colorAnim = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
     Animated.timing(colorAnim, {
       toValue: active ? 1 : 0,
@@ -92,73 +92,71 @@ const ProfileScreen = () => {
   const data = isEditing ? tempProfile : profile;
 
   return (
- //   <SafeAreaView style={{ flex: 1 }}>
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Profile</Text>
-      </View>
+    <View style={styles.container}>
+      <SubHeader title="My Profile" />
+      <ScrollView >
+        {/* Header */}
 
-      {/* Profile Card */}
-      <View style={styles.profileCard}>
-        <Image source={{ uri: data.avatar }} style={styles.avatar} />
-        <Text style={styles.name}>{data.name}</Text>
-        <Text style={styles.role}>{data.role}</Text>
-      </View>
-
-      {/* Sections */}
-      <Section title="Personal Information">
-        <Field
-          label="Full Name"
-          value={data.name}
-          editable={isEditing}
-          onChangeText={(v) => handleChange('name', v)}
-        />
-
-        <Field
-          label="Qualification"
-          value={data.qualification}
-          editable={isEditing}
-          onChangeText={(v) => handleChange('qualification', v)}
-        />
-      </Section>
-
-      <Section title="Contact Information">
-        <Field
-          label="Email"
-          value={data.email}
-          editable={isEditing}
-          onChangeText={(v) => handleChange('email', v)}
-        />
-
-        <Field
-          label="Mobile"
-          value={data.mobile}
-          editable={isEditing}
-          onChangeText={(v) => handleChange('mobile', v)}
-        />
-      </Section>
-
-      {/* Action Buttons */}
-      {isEditing ? (
-        <View style={styles.actionRow}>
-          <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-            <Text style={styles.btnText}>Save</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel}>
-            <Text style={styles.cancelText}>Cancel</Text>
-          </TouchableOpacity>
+        {/* Profile Card */}
+        <View style={styles.profileCard}>
+          <Image source={{ uri: data.avatar }} style={styles.avatar} />
+          <Text style={styles.name}>{data.name}</Text>
+          <Text style={styles.role}>{data.role}</Text>
         </View>
-      ) : (
-        <View style={{ marginTop: 5, alignItems: 'center' }}>
-          <TouchableOpacity style={styles.editProfileBtn} onPress={handleEdit}>
-            <Text style={styles.btnText}>Edit Profile</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </ScrollView>
-  //  </SafeAreaView>
+
+        {/* Sections */}
+        <Section title="Personal Information">
+          <Field
+            label="Full Name"
+            value={data.name}
+            editable={isEditing}
+            onChangeText={(v) => handleChange('name', v)}
+          />
+
+          <Field
+            label="Qualification"
+            value={data.qualification}
+            editable={isEditing}
+            onChangeText={(v) => handleChange('qualification', v)}
+          />
+        </Section>
+
+        <Section title="Contact Information">
+          <Field
+            label="Email"
+            value={data.email}
+            editable={isEditing}
+            onChangeText={(v) => handleChange('email', v)}
+          />
+
+          <Field
+            label="Mobile"
+            value={data.mobile}
+            editable={isEditing}
+            onChangeText={(v) => handleChange('mobile', v)}
+          />
+        </Section>
+
+        {/* Action Buttons */}
+        {isEditing ? (
+          <View style={styles.actionRow}>
+            <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
+              <Text style={styles.btnText}>Save</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel}>
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={{ marginTop: 5, alignItems: 'center' }}>
+            <TouchableOpacity style={styles.editProfileBtn} onPress={handleEdit}>
+              <Text style={styles.btnText}>Edit Profile</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 

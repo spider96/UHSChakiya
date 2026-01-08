@@ -5,7 +5,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // Screens
 import Header from '../screens/Header';
-import Profile from '../screens/EditUserProfile';
+import Profile from './UserProfile';
 import TeacherDashboard from '../screens/TeacherDashboard';
 import StudentDashboard from '../screens/StudentDashboard';
 import HomeContent from '../screens/HomeContent';
