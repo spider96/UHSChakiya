@@ -1,0 +1,288 @@
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+
+const StudentListStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f2f5',
+  },
+  header: {
+    backgroundColor: '#004a99',
+    padding: 16,
+    paddingTop: 12,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  headerSubtitle: {
+    color: '#ddd',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 16,
+  },
+  filterSection: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+  },
+  filterTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#004a99',
+    marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f38120',
+    paddingBottom: 8,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  filterInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 12,
+    color: '#333',
+    backgroundColor: '#f9f9f9',
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#0A5ED7',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  filterButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  resetButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resetButtonText: {
+    color: '#333',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  tableSection: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 2,
+  },
+  horizontalScrollContainer: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  tableWrapper: {
+    width: 790,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#004a99',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderBottomWidth: 2,
+    borderBottomColor: '#f38120',
+    height: 50,
+    alignItems: 'center',
+  },
+  headerCell: {
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
+  headerCellText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    alignItems: 'center',
+    height: 55,
+  },
+  tableRowAlternate: {
+    backgroundColor: '#f9f9f9',
+  },
+  tableCell: {
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+  },
+  tableCellText: {
+    fontSize: 13,
+    color: '#333',
+    textAlign: 'center',
+  },
+  tableCellBold: {
+    fontWeight: '600',
+    color: '#004a99',
+  },
+  actionCell: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    paddingHorizontal: 4,
+  },
+  editButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    backgroundColor: '#0A5ED7',
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editButtonText: {
+    color: 'white',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  deleteButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    backgroundColor: '#d32f2f',
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    color: '#999',
+    fontWeight: '500',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 12,
+    elevation: 2,
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#004a99',
+  },
+  statLabel: {
+    fontSize: 11,
+    color: '#666',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  /* Modal / Profile Card */
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalCard: {
+    width: '100%',
+    maxWidth: 520,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    elevation: 6,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  profileImage: {
+    width: 84,
+    height: 84,
+    borderRadius: 8,
+    backgroundColor: '#eee',
+    marginRight: 12,
+  },
+  profileName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#004a99',
+  },
+  profileRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  profileLabel: {
+    fontSize: 13,
+    color: '#666',
+    flex: 0.5,
+  },
+  profileValue: {
+    fontSize: 13,
+    color: '#333',
+    fontWeight: '600',
+    flex: 0.5,
+    textAlign: 'right',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 12,
+    gap: 8,
+  },
+  closeButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 8,
+  },
+  closeButtonText: {
+    color: '#333',
+    fontWeight: '700',
+  },
+});
+
+export default StudentListStyles;

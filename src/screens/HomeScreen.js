@@ -8,6 +8,8 @@ import Header from '../screens/Header';
 import Profile from './UserProfile';
 import TeacherDashboard from '../screens/TeacherDashboard';
 import StudentDashboard from '../screens/StudentDashboard';
+import AddStudentScreen from '../screens/AddStudentScreen';
+import StudentListScreen from '../screens/StudentListScreen';
 import HomeContent from '../screens/HomeContent';
 import LoginScreen from '../screens/LoginScreen';
 import NoticeScreen from '../screens/NoticeScreen';
@@ -17,10 +19,11 @@ import SideMenu from '../components/SideMenu';
 import { getUser, removeUser } from '../utils/storage';
 import { USER_ROLES } from '../constants/roles';
 
-export default function App() {
+export default function App(navigation) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [activeScreen, setActiveScreen] = useState('HOME');
+  const [screenParams, setScreenParams] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -51,9 +54,12 @@ export default function App() {
     }
   };
 
-  const handleNavigation = (screen) => {
+  const handleNavigation = (screen, params = null) => {
     // 1. Start closing the menu
     setIsMenuOpen(false);
+
+    // Save params for the screen (used for edit flows)
+    setScreenParams(params);
 
     // 2. Delay the screen swap slightly so it happens while the menu is sliding
     setTimeout(() => {
@@ -71,7 +77,9 @@ export default function App() {
       case 'HOME': return <HomeContent onNavigate={handleNavigation} />;
       case 'PROFILE': return <Profile />;
       case 'TEACHERS': return <TeacherDashboard />;
-      case 'STUDENTS': return <StudentDashboard />;
+      case 'STUDENTS': return <StudentDashboard onNavigate={handleNavigation} />;
+      case 'ADD_STUDENT': return <AddStudentScreen onNavigate={handleNavigation} initialStudent={screenParams} />;
+      case 'STUDENT_LIST': return <StudentListScreen onNavigate={handleNavigation} />;
       case 'NOTICES': return <NoticeScreen  />;
       case 'LOGIN': return <LoginScreen onNavigate={handleNavigation} onLoginSuccess={handleLoginSuccess} />;
       default: return <HomeContent  onNavigate={handleNavigation}  />;
