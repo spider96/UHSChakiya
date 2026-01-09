@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext ,StyleSheet} from 'react';
 import { View } from 'react-native';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -19,9 +19,23 @@ export default function LoginScreen({onNavigate,onLoginSuccess}) {
 
   return (
     <View style={{ padding: 20 }}>
-      <Input placeholder="Username" value={username} onChangeText={setUsername} />
-      <Input placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
+      <Input style={styles.input} placeholder="Username" value={username} onChangeText={setUsername} />
+      <Input style={styles.input} placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
       <Button title="Login" onPress={handleLogin} />
     </View>
   );  
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  input: {
+    marginBottom: 15,
+    bordercolor: '#ccc',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+  },
+});

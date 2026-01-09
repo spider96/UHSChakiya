@@ -1,4 +1,4 @@
-import React, { useEffect, useState,memo ,useRef} from 'react';
+import React, { useEffect, useState, memo, useRef } from 'react';
 import styles from '../style/NoticeStyles';
 import SubHeader from '../components/SubHeader';
 import {
@@ -145,7 +145,7 @@ const NoticeCard = memo(({ item }) => {
     const toggle = () => {
         const toValue = expanded ? 0 : 1;
         setExpanded(!expanded);
-        
+
         Animated.timing(animationValue, {
             toValue,
             duration: 300,
@@ -314,24 +314,24 @@ const NoticeBoardScreen = () => {
                 }
             /> */}
 
-<FlatList
-    data={notices}
-    keyExtractor={(item) => item.id.toString()}
-    renderItem={({ item }) => <NoticeCard item={item} />}
-    contentContainerStyle={styles.list}
-    // Optimization props:
-    removeClippedSubviews={true} 
-    initialNumToRender={10}
-    maxToRenderPerBatch={10}
-    windowSize={5}
-    refreshControl={
-        <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#0B4DA2']}
-        />
-    }
-/>
+            <FlatList
+                data={notices}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => <NoticeCard item={item} />}
+                contentContainerStyle={styles.list}
+                // Optimization props:
+                removeClippedSubviews={true}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={5}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={['#0B4DA2']}
+                    />
+                }
+            />
 
         </View>
     );

@@ -49,5 +49,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "overrides": {
+    "sqlite3": "5.1.7"
   }
 }
