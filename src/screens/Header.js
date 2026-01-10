@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, StatusBar ,Image} from 'react-native';
 import { Menu as MenuIcon, Menu } from 'lucide-react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import styles from '../style/HomeStyles';
@@ -17,7 +17,8 @@ const Header = ({ onMenuPress,onNavigate }) => {
               style={styles.logoPlaceholder}
             >
             <View style={styles.logoPlaceholder} >
-              <Text style={{ fontSize: 8, color: '#004a99', fontWeight: 'bold' }}>LOGO</Text>
+              <Image source={require('../assets/logo.jpg')} style={styles.logoImage} />
+              {/* <Text style={{ fontSize: 8, color: '#004a99', fontWeight: 'bold' }}>LOGO</Text> */}
             </View>
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>

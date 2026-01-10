@@ -82,10 +82,13 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
       <Animated.View
         style={[
           styles.menuContent,
-          { transform: [{ translateX: slideAnim }] }
+          {
+            transform: [{ translateX: slideAnim }],
+          }
         ]}
       >
-        <View style={[styles.menuHeader, { paddingTop: Platform.OS === 'android' ? insets.top + 10 : insets.top }]}>
+        {/* Menu Header */}
+          <View style={[styles.menuHeader, { paddingTop: insets.top + 24 }]}>
           <View style={styles.profileSection}>
             <View style={styles.avatarCircle}>
               <Text style={styles.avatarText}>{firstLetter}</Text>
@@ -95,7 +98,7 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
               <Text style={styles.roleLabel}>{(userRole || 'GUEST').toUpperCase()}</Text>
             </View>
           </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={onClose}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
@@ -169,12 +172,12 @@ const styles = StyleSheet.create({
   },
   menuHeader: {
     backgroundColor: '#004a99',
-    padding: 31,
+    padding: 20,
     paddingTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottomWidth: 4,
+    borderBottomWidth: 2,
     borderBottomColor: '#f38120'
   },
   profileSection: {

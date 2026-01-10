@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, View, Text, TouchableOpacity ,Image} from 'react-native';
 import { Megaphone, Info, BookOpen, Users, ImageIcon,ChevronRight } from 'lucide-react-native';
 import styles from '../style/HomeStyles';
 
@@ -30,15 +30,84 @@ const FacultyCard = ({ name, role }) => (
   </View>
 );
 
+const ImageSlideshow = () => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageLoadError, setImageLoadError] = useState(false);
+  
+  // Array of banner images - add more images as needed
+  const bannerImages = [
+    require('../assets/banner.jpg'),
+    require('../assets/banner.jpg'), // Replace with other image files
+    require('../assets/banner.jpg'),
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
+    }, 4000); // Change image every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [bannerImages.length]);
+
+  const goToImage = (index) => {
+    setCurrentImageIndex(index);
+  };
+
+  const handleImageLoad = () => {
+    setIsLoading(false);
+    setImageLoadError(false);
+  };
+
+  const handleImageError = () => {
+    setIsLoading(false);
+    setImageLoadError(true);
+  };
+
+  return (
+    <View style={styles.slideshowContainer}>
+      {isLoading && !imageLoadError && (
+        <View style={styles.heroImage}>
+          <Text style={styles.loadingText}>Loading Image...</Text>
+        </View>
+      )}
+      {imageLoadError && (
+        <View style={styles.heroImage}>
+          <Text style={styles.errorText}>Image Not Available</Text>
+        </View>
+      )}
+      {!imageLoadError && (
+        <Image 
+          source={bannerImages[currentImageIndex]} 
+          style={styles.heroImage}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+        />
+      )}
+      {/* Dots Indicator */}
+      <View style={styles.dotsContainer}>
+        {bannerImages.map((_, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.dot,
+              index === currentImageIndex ? styles.activeDot : styles.inactiveDot,
+            ]}
+            onPress={() => goToImage(index)}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
+
 const HomeContent = ({onNavigate}) => {
   return (
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
         
-        {/* 1. Hero Banner */}
+        {/* 1. Hero Banner Slideshow */}
         <View style={styles.heroContainer}>
-          <View style={styles.heroPlaceholder}>
-            <Text style={{color: '#fff'}}>Hero Image (Students Saluting)</Text>
-          </View>
+          <ImageSlideshow />
         </View>
 
         {/* 2. Notice Board */}
@@ -82,6 +151,22 @@ const HomeContent = ({onNavigate}) => {
             <Text style={styles.readMoreText}>Read More</Text>
             <ChevronRight color="#0056b3" size={14} />
           </TouchableOpacity>
+        </View>
+
+        {/* 4.1 Courses Offered Section */}
+        <View style={styles.sectionCard}>
+          <Text style={styles.sectionTitleMain}>Courses Offered</Text>
+          <View style={styles.titleUnderline} />
+          <View style={styles.coursesList}>
+            <View style={styles.courseItem}>
+              <Text style={styles.courseBullet}>•</Text>
+              <Text style={styles.courseText}>Class 09-10 (Matric Board)</Text>
+            </View>
+            <View style={styles.courseItem}>
+              <Text style={styles.courseBullet}>•</Text>
+              <Text style={styles.courseText}>Class 11-12 (Science & Arts)</Text>
+            </View>
+          </View>
         </View>
 
         {/* 5. Our Faculty Section */}

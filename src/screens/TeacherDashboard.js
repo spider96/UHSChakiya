@@ -6,7 +6,7 @@ import ActionCard from '../components/ActionCard';
 import styles from '../style/TeacherDashboardStyles';
 
 
-export default function TeacherDashboard() { 
+export default function TeacherDashboard({ onNavigate }) { 
 
   return (
     <ScrollView style={styles.mainContainer}>
@@ -19,13 +19,13 @@ export default function TeacherDashboard() {
           title="Add Teacher" 
           icon={Plus} 
           color="#4F46E5" // Indigo
-          onPress={() => console.log('Add')}
+          onPress={() => onNavigate('ADD_TEACHER')}
         />
         <ActionCard 
-          title="View All" 
+          title="Update Profile" 
           icon={Users} 
           color="#10B981" // Emerald
-          onPress={() => console.log('View')}
+          onPress={() => onNavigate('UPDATE_TEACHER')}
         />
         <ActionCard 
           title="Attendance" 

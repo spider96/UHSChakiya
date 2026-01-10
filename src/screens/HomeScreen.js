@@ -9,6 +9,8 @@ import Profile from './UserProfile';
 import TeacherDashboard from '../screens/TeacherDashboard';
 import StudentDashboard from '../screens/StudentDashboard';
 import AddStudentScreen from '../screens/AddStudentScreen';
+import AddTeacherScreen from '../screens/AddTeacherScreen';
+import UpdateTeacherScreen from '../screens/UpdateTeacherScreen';
 import StudentListScreen from '../screens/StudentListScreen';
 import HomeContent from '../screens/HomeContent';
 import LoginScreen from '../screens/LoginScreen';
@@ -76,7 +78,9 @@ export default function App(navigation) {
     switch (activeScreen) {
       case 'HOME': return <HomeContent onNavigate={handleNavigation} />;
       case 'PROFILE': return <Profile />;
-      case 'TEACHERS': return <TeacherDashboard />;
+      case 'TEACHERS': return <TeacherDashboard onNavigate={handleNavigation} />;
+      case 'ADD_TEACHER': return <AddTeacherScreen onNavigate={handleNavigation} initialTeacher={screenParams} />;
+      case 'UPDATE_TEACHER': return <UpdateTeacherScreen onNavigate={handleNavigation} />;
       case 'STUDENTS': return <StudentDashboard onNavigate={handleNavigation} />;
       case 'ADD_STUDENT': return <AddStudentScreen onNavigate={handleNavigation} initialStudent={screenParams} />;
       case 'STUDENT_LIST': return <StudentListScreen onNavigate={handleNavigation} />;
