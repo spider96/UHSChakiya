@@ -115,6 +115,8 @@ export default function AddStudentScreen({ onNavigate }) {
       console.error('Error picking image:', error);
     }
   };
+  
+  //const image = await handleImageUpload();
 
   const removeImage = () => {
     setStudentImage(null);

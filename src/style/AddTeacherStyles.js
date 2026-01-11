@@ -115,7 +115,7 @@ const AddTeacherStyles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 10,
+    //marginTop: 10,
     marginBottom: 20,
   },
   button: {

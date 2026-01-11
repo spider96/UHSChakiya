@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import {
   View,
   ScrollView,
@@ -14,7 +15,9 @@ import {
 import { Camera, Upload } from 'lucide-react-native';
 import SubHeader from '../components/SubHeader';
 import { getTeacherByUserId, updateTeacher } from '../services/teacherService';
+import { getImage } from '../services/MediaService';
 import UpdateTeacherStyles from '../style/UpdateTeacherStyles';
+import { handleImageUpload } from '../utils/utils';
 
 export default function UpdateTeacherScreen({ onNavigate }) {
   const [searchUserId, setSearchUserId] = useState('');
@@ -23,7 +26,9 @@ export default function UpdateTeacherScreen({ onNavigate }) {
   const [isSaving, setIsSaving] = useState(false);
   const [errors, setErrors] = useState({});
   const [teacherImage, setTeacherImage] = useState(null);
+  const [teacherDispImage, setTeacherDispImage] = useState(null);
   const [teacherFound, setTeacherFound] = useState(false);
+
 
   const [formData, setFormData] = useState({
     // Personal Information
@@ -71,6 +76,10 @@ export default function UpdateTeacherScreen({ onNavigate }) {
         });
         if (teacherData.profileImage) {
           setTeacherImage(teacherData.profileImage);
+          const imageUrl = await getImage(teacherData.profileImage);
+          setTeacherDispImage(imageUrl);
+          //  setTeacherDispImage(await getImage(teacherData.profileImage));
+          console.log('Teacher Image URL:', teacherDispImage);
         }
         setErrors({});
       } else {
@@ -158,10 +167,6 @@ export default function UpdateTeacherScreen({ onNavigate }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleImageUpload = () => {
-    // TODO: Implement image picker integration
-    Alert.alert('Image Upload', 'Image picker functionality to be implemented');
-  };
 
   const handleSave = async () => {
     if (!validateForm()) {
@@ -206,11 +211,12 @@ export default function UpdateTeacherScreen({ onNavigate }) {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={UpdateTeacherStyles.scrollContainer}
+        style={UpdateTeacherStyles.container}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={UpdateTeacherStyles.scrollContentContainer}
+          style={UpdateTeacherStyles.scrollContainer}
+         // contentContainerStyle={UpdateTeacherStyles.scrollContainer}
         >
           {/* Search Section */}
           <View style={UpdateTeacherStyles.formCard}>
@@ -260,256 +266,262 @@ export default function UpdateTeacherScreen({ onNavigate }) {
           {/* Form Section - Only visible when teacher is found */}
           {teacherFound && (
             <>
-          <View style={UpdateTeacherStyles.imageCard}>
-            <View style={UpdateTeacherStyles.imageContainer}>
-              {teacherImage ? (
-                <Image
-                  source={{ uri: teacherImage }}
-                  style={UpdateTeacherStyles.profileImage}
-                />
-              ) : (
-                <View style={UpdateTeacherStyles.imagePlaceholder}>
-                  <Camera color="#999" size={40} />
-                  <Text style={UpdateTeacherStyles.placeholderText}>No Image</Text>
+              <View style={UpdateTeacherStyles.imageCard}>
+                <View style={UpdateTeacherStyles.imageContainer}>
+                  {teacherDispImage ? (
+                    <Image
+                      source={{ uri: teacherDispImage }}
+                      style={UpdateTeacherStyles.profileImage}
+                    />
+                  ) : (
+                    <View style={UpdateTeacherStyles.imagePlaceholder}>
+                      <Camera color="#999" size={40} />
+                      <Text style={UpdateTeacherStyles.placeholderText}>No Image</Text>
+                    </View>
+                  )}
                 </View>
-              )}
-            </View>
-            <TouchableOpacity
-              style={UpdateTeacherStyles.uploadButton}
-              onPress={handleImageUpload}
-            >
-              <Upload color="white" size={18} />
-              <Text style={UpdateTeacherStyles.uploadButtonText}>Upload Photo</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Personal Information Section */}
-          <View style={UpdateTeacherStyles.formCard}>
-            <Text style={UpdateTeacherStyles.sectionTitle}>Personal Information</Text>
-
-            <View style={UpdateTeacherStyles.fieldGroup}>
-              <Text style={UpdateTeacherStyles.label}>Teacher Name *</Text>
-              <TextInput
-                style={[
-                  UpdateTeacherStyles.input,
-                  errors.teacherName && UpdateTeacherStyles.inputError,
-                ]}
-                placeholder="Enter teacher's full name"
-                placeholderTextColor="#999"
-                value={formData.teacherName}
-                onChangeText={(text) => updateField('personal', 'teacherName', text)}
-                editable={!isSaving}
-              />
-              {errors.teacherName && (
-                <Text style={UpdateTeacherStyles.errorText}>{errors.teacherName}</Text>
-              )}
-            </View>
-
-            <View style={UpdateTeacherStyles.rowContainer}>
-              <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
-                <Text style={UpdateTeacherStyles.label}>Date of Birth</Text>
-                <TextInput
-                  style={UpdateTeacherStyles.input}
-                  placeholder="DD/MM/YYYY"
-                  placeholderTextColor="#999"
-                  value={formData.dateOfBirth}
-                  onChangeText={(text) => updateField('personal', 'dateOfBirth', text)}
-                  editable={!isSaving}
-                />
-              </View>
-
-              <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
-                <Text style={UpdateTeacherStyles.label}>Gender</Text>
-                <TextInput
-                  style={UpdateTeacherStyles.input}
-                  placeholder="M/F/Other"
-                  placeholderTextColor="#999"
-                  value={formData.gender}
-                  onChangeText={(text) => updateField('personal', 'gender', text)}
-                  editable={!isSaving}
-                />
-              </View>
-            </View>
-
-            <View style={UpdateTeacherStyles.fieldGroup}>
-              <Text style={UpdateTeacherStyles.label}>Qualification *</Text>
-              <TextInput
-                style={[
-                  UpdateTeacherStyles.input,
-                  errors.qualification && UpdateTeacherStyles.inputError,
-                ]}
-                placeholder="e.g., B.Tech, M.Sc, B.Ed"
-                placeholderTextColor="#999"
-                value={formData.qualification}
-                onChangeText={(text) => updateField('personal', 'qualification', text)}
-                editable={!isSaving}
-              />
-              {errors.qualification && (
-                <Text style={UpdateTeacherStyles.errorText}>{errors.qualification}</Text>
-              )}
-            </View>
-          </View>
-
-          {/* Professional Information Section */}
-          <View style={UpdateTeacherStyles.formCard}>
-            <Text style={UpdateTeacherStyles.sectionTitle}>Professional Information</Text>
-
-            <View style={UpdateTeacherStyles.fieldGroup}>
-              <Text style={UpdateTeacherStyles.label}>Subject</Text>
-              <TextInput
-                style={UpdateTeacherStyles.input}
-                placeholder="e.g., Mathematics, English"
-                placeholderTextColor="#999"
-                value={formData.subject}
-                onChangeText={(text) => updateField('professional', 'subject', text)}
-                editable={!isSaving}
-              />
-            </View>
-
-            <View style={UpdateTeacherStyles.rowContainer}>
-              <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
-                <Text style={UpdateTeacherStyles.label}>Department</Text>
-                <TextInput
-                  style={UpdateTeacherStyles.input}
-                  placeholder="e.g., Science"
-                  placeholderTextColor="#999"
-                  value={formData.department}
-                  onChangeText={(text) => updateField('professional', 'department', text)}
-                  editable={!isSaving}
-                />
-              </View>
-
-              <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
-                <Text style={UpdateTeacherStyles.label}>Experience (Years)</Text>
-                <TextInput
-                  style={UpdateTeacherStyles.input}
-                  placeholder="e.g., 5"
-                  placeholderTextColor="#999"
-                  value={formData.experience}
-                  onChangeText={(text) => updateField('professional', 'experience', text)}
-                  keyboardType="numeric"
-                  editable={!isSaving}
-                />
-              </View>
-            </View>
-
-            <View style={UpdateTeacherStyles.fieldGroup}>
-              <Text style={UpdateTeacherStyles.label}>Designation *</Text>
-              <TextInput
-                style={[
-                  UpdateTeacherStyles.input,
-                  errors.designation && UpdateTeacherStyles.inputError,
-                ]}
-                placeholder="e.g., Senior Teacher, HOD"
-                placeholderTextColor="#999"
-                value={formData.designation}
-                onChangeText={(text) => updateField('professional', 'designation', text)}
-                editable={!isSaving}
-              />
-              {errors.designation && (
-                <Text style={UpdateTeacherStyles.errorText}>{errors.designation}</Text>
-              )}
-            </View>
-          </View>
-
-          {/* Contact Details Section */}
-          <View style={UpdateTeacherStyles.formCard}>
-            <Text style={UpdateTeacherStyles.sectionTitle}>Contact Details</Text>
-
-            <View style={UpdateTeacherStyles.fieldGroup}>
-              <Text style={UpdateTeacherStyles.label}>Email ID *</Text>
-              <TextInput
-                style={[
-                  UpdateTeacherStyles.input,
-                  errors.emailId && UpdateTeacherStyles.inputError,
-                ]}
-                placeholder="Enter email address"
-                placeholderTextColor="#999"
-                value={formData.emailId}
-                onChangeText={(text) => updateField('contact', 'emailId', text)}
-                keyboardType="email-address"
-                editable={!isSaving}
-              />
-              {errors.emailId && (
-                <Text style={UpdateTeacherStyles.errorText}>{errors.emailId}</Text>
-              )}
-            </View>
-
-            <View style={UpdateTeacherStyles.rowContainer}>
-              <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
-                <Text style={UpdateTeacherStyles.label}>Mobile Number *</Text>
-                <TextInput
-                  style={[
-                    UpdateTeacherStyles.input,
-                    errors.mobileNumber && UpdateTeacherStyles.inputError,
-                  ]}
-                  placeholder="10-digit number"
-                  placeholderTextColor="#999"
-                  value={formData.mobileNumber}
-                  onChangeText={(text) =>
-                    updateField('contact', 'mobileNumber', text.replace(/[^0-9]/g, ''))
+                <TouchableOpacity
+                  style={UpdateTeacherStyles.uploadButton}
+                  onPress={() =>
+                    handleImageUpload(async (imageUrl) => {
+                      console.log('Uploaded Image URL:', imageUrl);
+                      setTeacherImage(imageUrl);
+                      setTeacherDispImage(await getImage(imageUrl));
+                    })
                   }
-                  keyboardType="phone-pad"
-                  maxLength={10}
-                  editable={!isSaving}
-                />
-                {errors.mobileNumber && (
-                  <Text style={UpdateTeacherStyles.errorText}>{errors.mobileNumber}</Text>
-                )}
+                >
+                  <Upload color="white" size={18} />
+                  <Text style={UpdateTeacherStyles.uploadButtonText}>Upload Photo</Text>
+                </TouchableOpacity>
               </View>
 
-              <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
-                <Text style={UpdateTeacherStyles.label}>Alternate Phone</Text>
-                <TextInput
-                  style={UpdateTeacherStyles.input}
-                  placeholder="Optional"
-                  placeholderTextColor="#999"
-                  value={formData.alternatePhone}
-                  onChangeText={(text) =>
-                    updateField('contact', 'alternatePhone', text.replace(/[^0-9]/g, ''))
-                  }
-                  keyboardType="phone-pad"
-                  maxLength={10}
-                  editable={!isSaving}
-                />
+              {/* Personal Information Section */}
+              <View style={UpdateTeacherStyles.formCard}>
+                <Text style={UpdateTeacherStyles.sectionTitle}>Personal Information</Text>
+
+                <View style={UpdateTeacherStyles.fieldGroup}>
+                  <Text style={UpdateTeacherStyles.label}>Teacher Name *</Text>
+                  <TextInput
+                    style={[
+                      UpdateTeacherStyles.input,
+                      errors.teacherName && UpdateTeacherStyles.inputError,
+                    ]}
+                    placeholder="Enter teacher's full name"
+                    placeholderTextColor="#999"
+                    value={formData.teacherName}
+                    onChangeText={(text) => updateField('personal', 'teacherName', text)}
+                    editable={!isSaving}
+                  />
+                  {errors.teacherName && (
+                    <Text style={UpdateTeacherStyles.errorText}>{errors.teacherName}</Text>
+                  )}
+                </View>
+
+                <View style={UpdateTeacherStyles.rowContainer}>
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Date of Birth</Text>
+                    <TextInput
+                      style={UpdateTeacherStyles.input}
+                      placeholder="DD/MM/YYYY"
+                      placeholderTextColor="#999"
+                      value={formData.dateOfBirth}
+                      onChangeText={(text) => updateField('personal', 'dateOfBirth', text)}
+                      editable={!isSaving}
+                    />
+                  </View>
+
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Gender</Text>
+                    <TextInput
+                      style={UpdateTeacherStyles.input}
+                      placeholder="M/F/Other"
+                      placeholderTextColor="#999"
+                      value={formData.gender}
+                      onChangeText={(text) => updateField('personal', 'gender', text)}
+                      editable={!isSaving}
+                    />
+                  </View>
+                </View>
+
+                <View style={UpdateTeacherStyles.fieldGroup}>
+                  <Text style={UpdateTeacherStyles.label}>Qualification *</Text>
+                  <TextInput
+                    style={[
+                      UpdateTeacherStyles.input,
+                      errors.qualification && UpdateTeacherStyles.inputError,
+                    ]}
+                    placeholder="e.g., B.Tech, M.Sc, B.Ed"
+                    placeholderTextColor="#999"
+                    value={formData.qualification}
+                    onChangeText={(text) => updateField('personal', 'qualification', text)}
+                    editable={!isSaving}
+                  />
+                  {errors.qualification && (
+                    <Text style={UpdateTeacherStyles.errorText}>{errors.qualification}</Text>
+                  )}
+                </View>
               </View>
-            </View>
 
-            <View style={UpdateTeacherStyles.fieldGroup}>
-              <Text style={UpdateTeacherStyles.label}>Address</Text>
-              <TextInput
-                style={[UpdateTeacherStyles.input, UpdateTeacherStyles.multilineInput]}
-                placeholder="Enter full address"
-                placeholderTextColor="#999"
-                value={formData.address}
-                onChangeText={(text) => updateField('contact', 'address', text)}
-                multiline={true}
-                numberOfLines={4}
-                editable={!isSaving}
-              />
-            </View>
-          </View>
+              {/* Professional Information Section */}
+              <View style={UpdateTeacherStyles.formCard}>
+                <Text style={UpdateTeacherStyles.sectionTitle}>Professional Information</Text>
 
-          {/* Action Buttons */}
-          <View style={UpdateTeacherStyles.buttonContainer}>
-            <TouchableOpacity
-              style={[UpdateTeacherStyles.button, UpdateTeacherStyles.cancelButton]}
-              onPress={handleCancel}
-              disabled={isSaving}
-            >
-              <Text style={UpdateTeacherStyles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
+                <View style={UpdateTeacherStyles.fieldGroup}>
+                  <Text style={UpdateTeacherStyles.label}>Subject</Text>
+                  <TextInput
+                    style={UpdateTeacherStyles.input}
+                    placeholder="e.g., Mathematics, English"
+                    placeholderTextColor="#999"
+                    value={formData.subject}
+                    onChangeText={(text) => updateField('professional', 'subject', text)}
+                    editable={!isSaving}
+                  />
+                </View>
 
-            <TouchableOpacity
-              style={[UpdateTeacherStyles.button, UpdateTeacherStyles.submitButton]}
-              onPress={handleSave}
-              disabled={isSaving}
-            >
-              <Text style={UpdateTeacherStyles.submitButtonText}>
-                {isSaving ? 'Saving...' : 'Update Profile'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+                <View style={UpdateTeacherStyles.rowContainer}>
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Department</Text>
+                    <TextInput
+                      style={UpdateTeacherStyles.input}
+                      placeholder="e.g., Science"
+                      placeholderTextColor="#999"
+                      value={formData.department}
+                      onChangeText={(text) => updateField('professional', 'department', text)}
+                      editable={!isSaving}
+                    />
+                  </View>
+
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Experience (Years)</Text>
+                    <TextInput
+                      style={UpdateTeacherStyles.input}
+                      placeholder="e.g., 5"
+                      placeholderTextColor="#999"
+                      value={formData.experience}
+                      onChangeText={(text) => updateField('professional', 'experience', text)}
+                      keyboardType="numeric"
+                      editable={!isSaving}
+                    />
+                  </View>
+                </View>
+
+                <View style={UpdateTeacherStyles.fieldGroup}>
+                  <Text style={UpdateTeacherStyles.label}>Designation *</Text>
+                  <TextInput
+                    style={[
+                      UpdateTeacherStyles.input,
+                      errors.designation && UpdateTeacherStyles.inputError,
+                    ]}
+                    placeholder="e.g., Senior Teacher, HOD"
+                    placeholderTextColor="#999"
+                    value={formData.designation}
+                    onChangeText={(text) => updateField('professional', 'designation', text)}
+                    editable={!isSaving}
+                  />
+                  {errors.designation && (
+                    <Text style={UpdateTeacherStyles.errorText}>{errors.designation}</Text>
+                  )}
+                </View>
+              </View>
+
+              {/* Contact Details Section */}
+              <View style={UpdateTeacherStyles.formCard}>
+                <Text style={UpdateTeacherStyles.sectionTitle}>Contact Details</Text>
+
+                <View style={UpdateTeacherStyles.fieldGroup}>
+                  <Text style={UpdateTeacherStyles.label}>Email ID *</Text>
+                  <TextInput
+                    style={[
+                      UpdateTeacherStyles.input,
+                      errors.emailId && UpdateTeacherStyles.inputError,
+                    ]}
+                    placeholder="Enter email address"
+                    placeholderTextColor="#999"
+                    value={formData.emailId}
+                    onChangeText={(text) => updateField('contact', 'emailId', text)}
+                    keyboardType="email-address"
+                    editable={!isSaving}
+                  />
+                  {errors.emailId && (
+                    <Text style={UpdateTeacherStyles.errorText}>{errors.emailId}</Text>
+                  )}
+                </View>
+
+                <View style={UpdateTeacherStyles.rowContainer}>
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Mobile Number *</Text>
+                    <TextInput
+                      style={[
+                        UpdateTeacherStyles.input,
+                        errors.mobileNumber && UpdateTeacherStyles.inputError,
+                      ]}
+                      placeholder="10-digit number"
+                      placeholderTextColor="#999"
+                      value={formData.mobileNumber}
+                      onChangeText={(text) =>
+                        updateField('contact', 'mobileNumber', text.replace(/[^0-9]/g, ''))
+                      }
+                      keyboardType="phone-pad"
+                      maxLength={10}
+                      editable={!isSaving}
+                    />
+                    {errors.mobileNumber && (
+                      <Text style={UpdateTeacherStyles.errorText}>{errors.mobileNumber}</Text>
+                    )}
+                  </View>
+
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Alternate Phone</Text>
+                    <TextInput
+                      style={UpdateTeacherStyles.input}
+                      placeholder="Optional"
+                      placeholderTextColor="#999"
+                      value={formData.alternatePhone}
+                      onChangeText={(text) =>
+                        updateField('contact', 'alternatePhone', text.replace(/[^0-9]/g, ''))
+                      }
+                      keyboardType="phone-pad"
+                      maxLength={10}
+                      editable={!isSaving}
+                    />
+                  </View>
+                </View>
+
+                <View style={UpdateTeacherStyles.fieldGroup}>
+                  <Text style={UpdateTeacherStyles.label}>Address</Text>
+                  <TextInput
+                    style={[UpdateTeacherStyles.input, UpdateTeacherStyles.multilineInput]}
+                    placeholder="Enter full address"
+                    placeholderTextColor="#999"
+                    value={formData.address}
+                    onChangeText={(text) => updateField('contact', 'address', text)}
+                    multiline={true}
+                    numberOfLines={4}
+                    editable={!isSaving}
+                  />
+                </View>
+              </View>
+
+              {/* Action Buttons */}
+              <View style={UpdateTeacherStyles.buttonContainer}>
+                <TouchableOpacity
+                  style={[UpdateTeacherStyles.button, UpdateTeacherStyles.cancelButton]}
+                  onPress={handleCancel}
+                  disabled={isSaving}
+                >
+                  <Text style={UpdateTeacherStyles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[UpdateTeacherStyles.button, UpdateTeacherStyles.submitButton]}
+                  onPress={handleSave}
+                  disabled={isSaving}
+                >
+                  <Text style={UpdateTeacherStyles.submitButtonText}>
+                    {isSaving ? 'Saving...' : 'Update Profile'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </>
           )}
 

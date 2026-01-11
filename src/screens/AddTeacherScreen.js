@@ -112,16 +112,17 @@ export default function AddTeacherScreen({ onNavigate }) {
   };
 
   return (
-    <View style={AddTeacherStyles.container}>
+    <View style={AddTeacherStyles.safeArea}>
       <SubHeader title="Add Teacher" />
       
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={AddTeacherStyles.scrollContainer}
+        style={AddTeacherStyles.container}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={AddTeacherStyles.scrollContentContainer}
+          style={AddTeacherStyles.scrollContainer}
+          //contentContainerStyle={AddTeacherStyles.scrollContainer}
         >
           <View style={AddTeacherStyles.formCard}>
             <Text style={AddTeacherStyles.sectionTitle}>Basic Information</Text>
