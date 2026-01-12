@@ -92,7 +92,7 @@ const AddStudentStyles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 24,
+    marginTop: 8,
   },
   submitButton: {
     flex: 1,

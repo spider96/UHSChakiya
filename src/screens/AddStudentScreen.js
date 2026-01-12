@@ -13,6 +13,8 @@ import {
 import { addStudent } from '../services/studentService';
 import AddStudentStyles from '../style/AddStudentStyles';
 import SubHeader from '../components/SubHeader';
+import { getImage } from '../services/MediaService';
+import { handleImageUpload } from '../utils/utils';
 
 export default function AddStudentScreen({ onNavigate }) {
   const [student, setStudent] = useState({
@@ -86,35 +88,35 @@ export default function AddStudentScreen({ onNavigate }) {
     onNavigate('STUDENTS');
   };
 
-  const pickImage = async () => {
-    try {
-      // Open camera/gallery picker
-      Alert.alert(
-        'Upload Photo',
-        'Choose source',
-        [
-          {
-            text: 'Gallery',
-            onPress: () => {
-              // Placeholder for actual image picker
-              // For production, use react-native-image-picker or expo-image-picker
-              Alert.alert('Gallery', 'Image picker not yet configured. Use camera or upload from device.');
-            },
-          },
-          {
-            text: 'Camera',
-            onPress: () => {
-              // Placeholder for camera
-              Alert.alert('Camera', 'Camera not yet configured.');
-            },
-          },
-          { text: 'Cancel', style: 'cancel' },
-        ]
-      );
-    } catch (error) {
-      console.error('Error picking image:', error);
-    }
-  };
+  // const pickImage = async () => {
+  //   try {
+  //     // Open camera/gallery picker
+  //     Alert.alert(
+  //       'Upload Photo',
+  //       'Choose source',
+  //       [
+  //         {
+  //           text: 'Gallery',
+  //           onPress: () => {
+  //             // Placeholder for actual image picker
+  //             // For production, use react-native-image-picker or expo-image-picker
+  //             Alert.alert('Gallery', 'Image picker not yet configured. Use camera or upload from device.');
+  //           },
+  //         },
+  //         {
+  //           text: 'Camera',
+  //           onPress: () => {
+  //             // Placeholder for camera
+  //             Alert.alert('Camera', 'Camera not yet configured.');
+  //           },
+  //         },
+  //         { text: 'Cancel', style: 'cancel' },
+  //       ]
+  //     );
+  //   } catch (error) {
+  //     console.error('Error picking image:', error);
+  //   }
+  // };
   
   //const image = await handleImageUpload();
 
@@ -170,7 +172,14 @@ export default function AddStudentScreen({ onNavigate }) {
             ) : (
               <TouchableOpacity
                 style={AddStudentStyles.uploadButton}
-                onPress={pickImage}
+                //onPress={pickImage}
+                    onPress={() =>
+                    handleImageUpload(async (imageUrl) => {
+                      console.log('Uploaded Image URL:', imageUrl);
+                      setStudentImage(await getImage(imageUrl));
+                     // setStudentDispImage(await getImage(imageUrl));
+                    })
+                  }
               >
                 <Text style={AddStudentStyles.uploadButtonText}>📁 Upload Photo</Text>
                 <Text style={AddStudentStyles.uploadSubtext}>
