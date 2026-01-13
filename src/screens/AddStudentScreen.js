@@ -89,37 +89,6 @@ export default function AddStudentScreen({ onNavigate }) {
     onNavigate('STUDENTS');
   };
 
-  // const pickImage = async () => {
-  //   try {
-  //     // Open camera/gallery picker
-  //     Alert.alert(
-  //       'Upload Photo',
-  //       'Choose source',
-  //       [
-  //         {
-  //           text: 'Gallery',
-  //           onPress: () => {
-  //             // Placeholder for actual image picker
-  //             // For production, use react-native-image-picker or expo-image-picker
-  //             Alert.alert('Gallery', 'Image picker not yet configured. Use camera or upload from device.');
-  //           },
-  //         },
-  //         {
-  //           text: 'Camera',
-  //           onPress: () => {
-  //             // Placeholder for camera
-  //             Alert.alert('Camera', 'Camera not yet configured.');
-  //           },
-  //         },
-  //         { text: 'Cancel', style: 'cancel' },
-  //       ]
-  //     );
-  //   } catch (error) {
-  //     console.error('Error picking image:', error);
-  //   }
-  // };
-
-  //const image = await handleImageUpload();
 
   const removeImage = () => {
     setStudentImage(null);
@@ -131,13 +100,7 @@ export default function AddStudentScreen({ onNavigate }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={AddStudentStyles.container}
       >
-        {/* Header */}
-        {/* <View style={AddStudentStyles.header}>
-          <Text style={AddStudentStyles.headerTitle}>Add Student</Text>
-          <Text style={AddStudentStyles.headerSubtitle}>
-            Fill in all the required details to add a new student
-          </Text>
-        </View> */}
+
         <SubHeader title="Add Student" />
 
         {/* Form Content */}
@@ -226,6 +189,24 @@ export default function AddStudentScreen({ onNavigate }) {
               )}
             </View>
 
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Mother's Name *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.motherName && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter mother's name"
+                placeholderTextColor="#999"
+                value={student.motherName}
+                onChangeText={v => updateField('motherName', v)}
+                editable={!loading}
+              />
+              {errors.motherName && (
+                <Text style={AddStudentStyles.errorText}>{errors.motherName}</Text>
+              )}
+            </View>
+
             {/* Father's Name Field */}
             <View style={AddStudentStyles.formGroup}>
               <Text style={AddStudentStyles.label}>Father's Name *</Text>
@@ -245,18 +226,141 @@ export default function AddStudentScreen({ onNavigate }) {
               )}
             </View>
 
-            {/* Date of Birth Field */}
+
+            <View style={AddStudentStyles.rowContainer}>
+              {/* Date of Birth Field */}
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Gender *</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.className && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="Select Gender"
+                  placeholderTextColor="#999"
+                  value={student.className}
+                  onChangeText={v => updateField('className', v)}
+                  editable={!loading}
+                />
+                {errors.className && (
+                  <Text style={AddStudentStyles.errorText}>{errors.className}</Text>
+                )}
+              </View>
+
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Date Of Birth *</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.rollNumber && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="12/01/2000"
+                  placeholderTextColor="#999"
+                  value={student.rollNumber}
+                  onChangeText={v => updateField('rollNumber', v)}
+                  editable={!loading}
+                  keyboardType="numeric"
+                />
+                {errors.rollNumber && (
+                  <Text style={AddStudentStyles.errorText}>{errors.rollNumber}</Text>
+                )}
+              </View>
+            </View>
+
+            <View style={AddStudentStyles.rowContainer}>
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Social Category</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.className && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="Select Category"
+                  placeholderTextColor="#999"
+                  value={student.className}
+                  onChangeText={v => updateField('className', v)}
+                  editable={!loading}
+                />
+                {errors.className && (
+                  <Text style={AddStudentStyles.errorText}>{errors.className}</Text>
+                )}
+              </View>
+
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Religion</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.rollNumber && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="Select Religion"
+                  placeholderTextColor="#999"
+                  value={student.rollNumber}
+                  onChangeText={v => updateField('rollNumber', v)}
+                  editable={!loading}
+                />
+                {errors.rollNumber && (
+                  <Text style={AddStudentStyles.errorText}>{errors.rollNumber}</Text>
+                )}
+              </View>
+
+            </View>
+
+
             <View style={AddStudentStyles.formGroup}>
-              <Text style={AddStudentStyles.label}>Date of Birth</Text>
+              <Text style={AddStudentStyles.label}>Mobile Number *</Text>
               <TextInput
-                style={AddStudentStyles.input}
-                placeholder="YYYY-MM-DD"
+                style={[
+                  AddStudentStyles.input,
+                  errors.fatherName && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter father's name"
                 placeholderTextColor="#999"
-                value={student.dateOfBirth}
-                onChangeText={v => updateField('dateOfBirth', v)}
+                value={student.fatherName}
+                onChangeText={v => updateField('fatherName', v)}
                 editable={!loading}
               />
+              {errors.fatherName && (
+                <Text style={AddStudentStyles.errorText}>{errors.fatherName}</Text>
+              )}
             </View>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Email *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.fatherName && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter father's name"
+                placeholderTextColor="#999"
+                value={student.fatherName}
+                onChangeText={v => updateField('fatherName', v)}
+                editable={!loading}
+              />
+              {errors.fatherName && (
+                <Text style={AddStudentStyles.errorText}>{errors.fatherName}</Text>
+              )}
+            </View>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Address *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.fatherName && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter father's name"
+                placeholderTextColor="#999"
+                value={student.fatherName}
+                onChangeText={v => updateField('fatherName', v)}
+                editable={!loading}
+              />
+              {errors.fatherName && (
+                <Text style={AddStudentStyles.errorText}>{errors.fatherName}</Text>
+              )}
+            </View>
+
 
             {/* Academic Information Section */}
             <Text style={[AddStudentStyles.sectionTitle, { marginTop: 20 }]}>
