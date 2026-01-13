@@ -1,4 +1,4 @@
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+// import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import { Alert } from 'react-native';
 import { uploadImage } from '../services/MediaService';

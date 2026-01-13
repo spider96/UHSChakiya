@@ -23,6 +23,7 @@ export default function AddStudentScreen({ onNavigate }) {
     className: '',
     rollNumber: '',
     dateOfBirth: '',
+    image: null,
     active: true,
   });
 
@@ -117,7 +118,7 @@ export default function AddStudentScreen({ onNavigate }) {
   //     console.error('Error picking image:', error);
   //   }
   // };
-  
+
   //const image = await handleImageUpload();
 
   const removeImage = () => {
@@ -155,7 +156,7 @@ export default function AddStudentScreen({ onNavigate }) {
           {/* Image Upload Card */}
           <View style={AddStudentStyles.formCard}>
             <Text style={AddStudentStyles.sectionTitle}>📸 Student Photo</Text>
-            
+
             {studentImage ? (
               <View style={AddStudentStyles.imagePreviewContainer}>
                 <Image
@@ -173,13 +174,25 @@ export default function AddStudentScreen({ onNavigate }) {
               <TouchableOpacity
                 style={AddStudentStyles.uploadButton}
                 //onPress={pickImage}
-                    onPress={() =>
-                    handleImageUpload(async (imageUrl) => {
+                onPress={() =>
+                  handleImageUpload(async (imageUrl) => {
+                    try {
                       console.log('Uploaded Image URL:', imageUrl);
-                      setStudentImage(await getImage(imageUrl));
-                     // setStudentDispImage(await getImage(imageUrl));
-                    })
-                  }
+
+                      // 1. Get the displayable URI (if needed for local blob/base64)
+                      const displayUri = await getImage(imageUrl);
+                      setStudentImage(displayUri);
+
+                      // 2. IMPORTANT: Update the student object so the URL is sent to the backend on Save
+                      setStudent(prev => ({
+                        ...prev,
+                        image: imageUrl // Make sure your backend expects this field name
+                      }));
+                    } catch (error) {
+                      console.error("Error setting image:", error);
+                    }
+                  })
+                }
               >
                 <Text style={AddStudentStyles.uploadButtonText}>📁 Upload Photo</Text>
                 <Text style={AddStudentStyles.uploadSubtext}>
