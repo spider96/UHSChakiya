@@ -26,7 +26,7 @@ const actionCardStyles = StyleSheet.create({
         width: CARD_SIZE,
         height: CARD_SIZE,
         backgroundColor: '#FFFFFF',
-        borderRadius: 20,
+        borderRadius: 5,
         padding: 20,
         marginBottom: 20,
         justifyContent: 'center',

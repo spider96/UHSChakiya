@@ -9,10 +9,10 @@ const UpdateTeacherStyles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-    padding: 16,
+    padding: 12,
   },
   scrollContentContainer: {
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   loadingContainer: {
     flex: 1,
@@ -27,10 +27,10 @@ const UpdateTeacherStyles = StyleSheet.create({
   },
   imageCard: {
     backgroundColor: 'white',
-    borderRadius: 12,
+    borderRadius: 5,
     padding: 20,
     elevation: 3,
-    marginBottom: 20,
+    marginBottom: 10,
     alignItems: 'center',
   },
   imageContainer: {
@@ -76,10 +76,10 @@ const UpdateTeacherStyles = StyleSheet.create({
   },
   formCard: {
     backgroundColor: 'white',
-    borderRadius: 12,
+    borderRadius: 5,
     padding: 20,
     elevation: 3,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 16,
@@ -134,13 +134,13 @@ const UpdateTeacherStyles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 10,
+   // marginTop: 10,
     marginBottom: 20,
   },
   button: {
     flex: 1,
     paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 2,
@@ -166,7 +166,7 @@ const UpdateTeacherStyles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 8,
+    borderRadius: 5,
     paddingHorizontal: 14,
     backgroundColor: '#fff',
   },
@@ -202,7 +202,7 @@ const UpdateTeacherStyles = StyleSheet.create({
     backgroundColor: '#e8f5e9',
     paddingHorizontal: 12,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 5,
     borderLeftWidth: 4,
     borderLeftColor: '#10B981',
   },

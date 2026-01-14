@@ -149,7 +149,7 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={{ marginTop: 5, alignItems: 'center' }}>
+          <View style={{marginBottom: 10, alignItems: 'center' }}>
             <TouchableOpacity style={styles.editProfileBtn} onPress={handleEdit}>
               <Text style={styles.btnText}>Edit Profile</Text>
             </TouchableOpacity>

@@ -27,8 +27,11 @@ export default StyleSheet.create({
 
   profileCard: {
     backgroundColor: '#fff',
-    margin: 16,
-    borderRadius: 12,
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 10,
+    marginBottom: 5,
+    borderRadius: 5,
     alignItems: 'center',
     padding: 20,
     elevation: 2,
@@ -53,11 +56,12 @@ export default StyleSheet.create({
 
   section: {
     backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 12,
+    marginHorizontal: 12,
+    marginBottom: 5,
+    borderRadius: 5,
     paddingHorizontal: 16,
     paddingTop: 12,
+    elevation: 2,
   },
 
   sectionTitle: {
@@ -97,7 +101,9 @@ export default StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 16,
+    marginHorizontal: 12,
+    //margin: 16,
+    marginBottom: 10,
   },
 
   saveBtn: {
@@ -105,7 +111,7 @@ export default StyleSheet.create({
     flex: 1,
     marginRight: 8,
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 5,
     alignItems: 'center',
   },
 
@@ -114,7 +120,7 @@ export default StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 5,
     alignItems: 'center',
   },
 
@@ -132,7 +138,7 @@ editProfileBtn: {
   backgroundColor: '#1976D2', // Blue color, you can change it
   paddingVertical: 12,
   paddingHorizontal: 30,
-  borderRadius: 10,
+  borderRadius: 5,
   alignItems: 'center',
   justifyContent: 'center',
   elevation: 3, // for shadow on Android

@@ -314,7 +314,7 @@ export default function AddStudentScreen({ onNavigate }) {
                   AddStudentStyles.input,
                   errors.fatherName && AddStudentStyles.inputError,
                 ]}
-                placeholder="Enter father's name"
+                placeholder="Enter Mobile Number"
                 placeholderTextColor="#999"
                 value={student.fatherName}
                 onChangeText={v => updateField('fatherName', v)}
@@ -332,7 +332,7 @@ export default function AddStudentScreen({ onNavigate }) {
                   AddStudentStyles.input,
                   errors.fatherName && AddStudentStyles.inputError,
                 ]}
-                placeholder="Enter father's name"
+                placeholder="Enter Email"
                 placeholderTextColor="#999"
                 value={student.fatherName}
                 onChangeText={v => updateField('fatherName', v)}
@@ -350,7 +350,7 @@ export default function AddStudentScreen({ onNavigate }) {
                   AddStudentStyles.input,
                   errors.fatherName && AddStudentStyles.inputError,
                 ]}
-                placeholder="Enter father's name"
+                placeholder="Enter Address"
                 placeholderTextColor="#999"
                 value={student.fatherName}
                 onChangeText={v => updateField('fatherName', v)}

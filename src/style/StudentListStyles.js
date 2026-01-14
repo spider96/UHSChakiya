@@ -24,7 +24,7 @@ const StudentListStyles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: 16,
+    padding: 12,
   },
   filterSection: {
     backgroundColor: 'white',

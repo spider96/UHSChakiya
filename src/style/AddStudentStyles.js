@@ -28,17 +28,17 @@ const AddStudentStyles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-    padding: 16,
+    padding: 12,
   },
   scrollContentContainer: {
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   formCard: {
     backgroundColor: 'white',
     borderRadius: 12,
     padding: 20,
     elevation: 3,
-    marginBottom: 20,
+    marginBottom: 6,
   },
   sectionTitle: {
     fontSize: 16,

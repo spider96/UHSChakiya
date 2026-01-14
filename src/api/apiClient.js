@@ -5,8 +5,8 @@ const apiClient = axios.create({
   //baseURL: 'http://10.0.2.2:8080/api', // change if needed
   //baseURL: 'http://192.168.219.127:8080/api', // change if needed
  // baseURL: 'http://10.54.165.127:8080/api', // change if needed
-   baseURL: 'http://192.168.31.227:8080/api', // change if needed
-  //baseURL: 'http://192.168.1.2:8080/api', // change if needed
+  // baseURL: 'http://192.168.31.227:8080/api', // change if needed
+  baseURL: 'http://192.168.1.2:8080/api', // change if needed
   headers: {
     'Content-Type': 'application/json',
   },
