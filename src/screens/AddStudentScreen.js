@@ -18,17 +18,42 @@ import { handleImageUpload } from '../utils/utils';
 
 export default function AddStudentScreen({ onNavigate }) {
   const [student, setStudent] = useState({
-    name: '',
-    fatherName: '',
-    className: '',
-    rollNumber: '',
-    dateOfBirth: '',
+    //personal    
+    isAadhar: true,
+    aadharNumber: '',
     image: null,
+    name: '',
+    dateOfBirth: '',
+    fatherName: '',
+    motherName: '',
+    gender:'',
+    socialCategory: '',
+    religion: '',
+    address: '',
+    mobileNumber: '',
+    email: '',
+    //educational
+    session: '',
+    district: '',
+    block: '',
+    school: 'U',
+    className: '',
+    section: '',
+    admissionNumber: '',
+    dateOfAdmission: '',
+    rollNumber: '',
+    //finantial
+    accountNo: '',
+    accountHolderName: '',
+    studentBankName: '',
+    ifsc: '',
+    // status
     active: true,
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
   const [studentImage, setStudentImage] = useState(null);
 
   const updateField = (field, value) => {
@@ -170,6 +195,26 @@ export default function AddStudentScreen({ onNavigate }) {
             {/* Personal Information Section */}
             <Text style={AddStudentStyles.sectionTitle}>Personal Information</Text>
 
+
+            {/* Name Field */}
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Aadhar Number *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.aadharNumber && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter Aadhar Number"
+                placeholderTextColor="#999"
+                value={student.aadharNumber}
+                onChangeText={v => updateField('aadharNumber', v)}
+                editable={!loading}
+              />
+              {errors.aadharNumber && (
+                <Text style={AddStudentStyles.errorText}>{errors.aadharNumber}</Text>
+              )}
+            </View>
+
             {/* Name Field */}
             <View style={AddStudentStyles.formGroup}>
               <Text style={AddStudentStyles.label}>Student Name *</Text>
@@ -234,16 +279,16 @@ export default function AddStudentScreen({ onNavigate }) {
                 <TextInput
                   style={[
                     AddStudentStyles.input,
-                    errors.className && AddStudentStyles.inputError,
+                    errors.gender && AddStudentStyles.inputError,
                   ]}
                   placeholder="Select Gender"
                   placeholderTextColor="#999"
-                  value={student.className}
-                  onChangeText={v => updateField('className', v)}
+                  value={student.gender}
+                  onChangeText={v => updateField('gender', v)}
                   editable={!loading}
                 />
-                {errors.className && (
-                  <Text style={AddStudentStyles.errorText}>{errors.className}</Text>
+                {errors.gender && (
+                  <Text style={AddStudentStyles.errorText}>{errors.gender}</Text>
                 )}
               </View>
 
@@ -252,17 +297,17 @@ export default function AddStudentScreen({ onNavigate }) {
                 <TextInput
                   style={[
                     AddStudentStyles.input,
-                    errors.rollNumber && AddStudentStyles.inputError,
+                    errors.dateOfBirth && AddStudentStyles.inputError,
                   ]}
                   placeholder="12/01/2000"
                   placeholderTextColor="#999"
-                  value={student.rollNumber}
-                  onChangeText={v => updateField('rollNumber', v)}
+                  value={student.dateOfBirth}
+                  onChangeText={v => updateField('dateOfBirth', v)}
                   editable={!loading}
-                  keyboardType="numeric"
+                //  keyboardType="numeric"
                 />
-                {errors.rollNumber && (
-                  <Text style={AddStudentStyles.errorText}>{errors.rollNumber}</Text>
+                {errors.dateOfBirth && (
+                  <Text style={AddStudentStyles.errorText}>{errors.dateOfBirth}</Text>
                 )}
               </View>
             </View>
@@ -273,16 +318,16 @@ export default function AddStudentScreen({ onNavigate }) {
                 <TextInput
                   style={[
                     AddStudentStyles.input,
-                    errors.className && AddStudentStyles.inputError,
+                    errors.socialCategory && AddStudentStyles.inputError,
                   ]}
                   placeholder="Select Category"
                   placeholderTextColor="#999"
-                  value={student.className}
-                  onChangeText={v => updateField('className', v)}
+                  value={student.socialCategory}
+                  onChangeText={v => updateField('socialCategory', v)}
                   editable={!loading}
                 />
-                {errors.className && (
-                  <Text style={AddStudentStyles.errorText}>{errors.className}</Text>
+                {errors.socialCategory && (
+                  <Text style={AddStudentStyles.errorText}>{errors.socialCategory}</Text>
                 )}
               </View>
 
@@ -291,16 +336,16 @@ export default function AddStudentScreen({ onNavigate }) {
                 <TextInput
                   style={[
                     AddStudentStyles.input,
-                    errors.rollNumber && AddStudentStyles.inputError,
+                    errors.religion && AddStudentStyles.inputError,
                   ]}
                   placeholder="Select Religion"
                   placeholderTextColor="#999"
-                  value={student.rollNumber}
-                  onChangeText={v => updateField('rollNumber', v)}
+                  value={student.religion}
+                  onChangeText={v => updateField('religion', v)}
                   editable={!loading}
                 />
-                {errors.rollNumber && (
-                  <Text style={AddStudentStyles.errorText}>{errors.rollNumber}</Text>
+                {errors.religion && (
+                  <Text style={AddStudentStyles.errorText}>{errors.religion}</Text>
                 )}
               </View>
 
@@ -312,16 +357,16 @@ export default function AddStudentScreen({ onNavigate }) {
               <TextInput
                 style={[
                   AddStudentStyles.input,
-                  errors.fatherName && AddStudentStyles.inputError,
+                  errors.mobileNumber && AddStudentStyles.inputError,
                 ]}
                 placeholder="Enter Mobile Number"
                 placeholderTextColor="#999"
-                value={student.fatherName}
-                onChangeText={v => updateField('fatherName', v)}
+                value={student.mobileNumber}
+                onChangeText={v => updateField('mobileNumber', v)}
                 editable={!loading}
               />
-              {errors.fatherName && (
-                <Text style={AddStudentStyles.errorText}>{errors.fatherName}</Text>
+              {errors.mobileNumber && (
+                <Text style={AddStudentStyles.errorText}>{errors.mobileNumber}</Text>
               )}
             </View>
 
@@ -330,16 +375,16 @@ export default function AddStudentScreen({ onNavigate }) {
               <TextInput
                 style={[
                   AddStudentStyles.input,
-                  errors.fatherName && AddStudentStyles.inputError,
+                  errors.email && AddStudentStyles.inputError,
                 ]}
                 placeholder="Enter Email"
                 placeholderTextColor="#999"
-                value={student.fatherName}
-                onChangeText={v => updateField('fatherName', v)}
+                value={student.email}
+                onChangeText={v => updateField('email', v)}
                 editable={!loading}
               />
-              {errors.fatherName && (
-                <Text style={AddStudentStyles.errorText}>{errors.fatherName}</Text>
+              {errors.email && (
+                <Text style={AddStudentStyles.errorText}>{errors.email}</Text>
               )}
             </View>
 
@@ -347,17 +392,19 @@ export default function AddStudentScreen({ onNavigate }) {
               <Text style={AddStudentStyles.label}>Address *</Text>
               <TextInput
                 style={[
-                  AddStudentStyles.input,
-                  errors.fatherName && AddStudentStyles.inputError,
+                  AddStudentStyles.input,                                                                                       
+                  errors.address && AddStudentStyles.inputError, AddStudentStyles.multilineInput
                 ]}
                 placeholder="Enter Address"
                 placeholderTextColor="#999"
-                value={student.fatherName}
-                onChangeText={v => updateField('fatherName', v)}
+                value={student.address}
+                multiline={true}
+                numberOfLines={4}
+                onChangeText={v => updateField('address', v)}
                 editable={!loading}
               />
-              {errors.fatherName && (
-                <Text style={AddStudentStyles.errorText}>{errors.fatherName}</Text>
+              {errors.address && (
+                <Text style={AddStudentStyles.errorText}>{errors.address}</Text>
               )}
             </View>
 
@@ -367,8 +414,120 @@ export default function AddStudentScreen({ onNavigate }) {
               Academic Information
             </Text>
 
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>District *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.district && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter District"
+                placeholderTextColor="#999"
+                value={student.district}
+                onChangeText={v => updateField('district', v)}
+                editable={!loading}
+              />
+              {errors.district && (
+                <Text style={AddStudentStyles.errorText}>{errors.district}</Text>
+              )}
+            </View>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Block *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.block && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter Block"
+                placeholderTextColor="#999"
+                value={student.block}
+                onChangeText={v => updateField('block', v)}
+                editable={!loading}
+              />
+              {errors.block && (
+                <Text style={AddStudentStyles.errorText}>{errors.block}</Text>
+              )}
+            </View>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>School Name *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.school && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter School Name"
+                placeholderTextColor="#999"
+                value={student.school}
+                onChangeText={v => updateField('school', v)}
+                editable={!loading}
+              />
+              {errors.school && (
+                <Text style={AddStudentStyles.errorText}>{errors.school}</Text>
+              )}
+            </View>
+
+
             {/* Class and Roll No Row */}
             <View style={AddStudentStyles.rowContainer}>
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Session *</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.session && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="e.g. 2025-26"
+                  placeholderTextColor="#999"
+                  value={student.session}
+                  onChangeText={v => updateField('session', v)}
+                  editable={!loading}
+                />
+                {errors.session && (
+                  <Text style={AddStudentStyles.errorText}>{errors.session}</Text>
+                )}
+              </View>
+
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Admission Number *</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.admissionNumber && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="e.g., 01/2026"
+                  placeholderTextColor="#999"
+                  value={student.admissionNumber}
+                  onChangeText={v => updateField('admissionNumber', v)}
+                  editable={!loading}
+                  keyboardType="numeric"
+                />
+                {errors.admissionNumber && (
+                  <Text style={AddStudentStyles.errorText}>{errors.admissionNumber}</Text>
+                )}
+              </View>
+            </View>
+
+             <View style={AddStudentStyles.rowContainer}>
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Admission Date *</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.dateOfAdmission && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="dd/mm/yyyy"
+                  placeholderTextColor="#999"
+                  value={student.dateOfAdmission}
+                  onChangeText={v => updateField('dateOfAdmission', v)}
+                  editable={!loading}
+                />
+                {errors.dateOfAdmission && (
+                  <Text style={AddStudentStyles.errorText}>{errors.dateOfAdmission}</Text>
+                )}
+              </View>
+
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Class *</Text>
                 <TextInput
@@ -376,14 +535,35 @@ export default function AddStudentScreen({ onNavigate }) {
                     AddStudentStyles.input,
                     errors.className && AddStudentStyles.inputError,
                   ]}
-                  placeholder="e.g., 10-A"
+                  placeholder="Class-09"
                   placeholderTextColor="#999"
                   value={student.className}
                   onChangeText={v => updateField('className', v)}
                   editable={!loading}
+                  keyboardType="numeric"
                 />
                 {errors.className && (
                   <Text style={AddStudentStyles.errorText}>{errors.className}</Text>
+                )}
+              </View>
+            </View>
+
+             <View style={AddStudentStyles.rowContainer}>
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Section *</Text>
+                <TextInput
+                  style={[
+                    AddStudentStyles.input,
+                    errors.section && AddStudentStyles.inputError,
+                  ]}
+                  placeholder="e.g. A"
+                  placeholderTextColor="#999"
+                  value={student.section}
+                  onChangeText={v => updateField('section', v)}
+                  editable={!loading}
+                />
+                {errors.section && (
+                  <Text style={AddStudentStyles.errorText}>{errors.section}</Text>
                 )}
               </View>
 
@@ -394,7 +574,7 @@ export default function AddStudentScreen({ onNavigate }) {
                     AddStudentStyles.input,
                     errors.rollNumber && AddStudentStyles.inputError,
                   ]}
-                  placeholder="e.g., 25"
+                  placeholder="e.g. 25"
                   placeholderTextColor="#999"
                   value={student.rollNumber}
                   onChangeText={v => updateField('rollNumber', v)}
@@ -405,6 +585,84 @@ export default function AddStudentScreen({ onNavigate }) {
                   <Text style={AddStudentStyles.errorText}>{errors.rollNumber}</Text>
                 )}
               </View>
+            </View>
+
+
+            {/* Banking Information Section */}
+            <Text style={[AddStudentStyles.sectionTitle, { marginTop: 20 }]}>
+              Banking Information
+            </Text>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Account Number *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.accountNo && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter account number"
+                placeholderTextColor="#999"
+                value={student.accountNo}
+                onChangeText={v => updateField('accountNo', v)}
+                editable={!loading}
+              />
+              {errors.accountNo && (
+                <Text style={AddStudentStyles.errorText}>{errors.accountNo}</Text>
+              )}
+            </View>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Account Holder Name *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.accountHolderName && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter Account Holder Name"
+                placeholderTextColor="#999"
+                value={student.accountHolderName}
+                onChangeText={v => updateField('accountHolderName', v)}
+                editable={!loading}
+              />
+              {errors.accountHolderName && (
+                <Text style={AddStudentStyles.errorText}>{errors.accountHolderName}</Text>
+              )}
+            </View>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Name of bank *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.studentBankName && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter Name of bank"
+                placeholderTextColor="#999"
+                value={student.studentBankName}
+                onChangeText={v => updateField('studentBankName', v)}
+                editable={!loading}
+              />
+              {errors.email && (
+                <Text style={AddStudentStyles.errorText}>{errors.studentBankName}</Text>
+              )}
+            </View>
+
+            <View style={AddStudentStyles.formGroup}>
+              <Text style={AddStudentStyles.label}>Ifsc *</Text>
+              <TextInput
+                style={[
+                  AddStudentStyles.input,
+                  errors.ifsc && AddStudentStyles.inputError,
+                ]}
+                placeholder="Enter ifsc"
+                placeholderTextColor="#999"
+                value={student.ifsc}
+                onChangeText={v => updateField('ifsc', v)}
+                editable={!loading}
+              />
+              {errors.ifsc && (
+                <Text style={AddStudentStyles.errorText}>{errors.ifsc}</Text>
+              )}
             </View>
 
             {/* Submit Error */}

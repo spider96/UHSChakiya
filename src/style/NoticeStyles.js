@@ -17,11 +17,11 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  list: { padding: 16 },
+  list: { padding: 12 },
 
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 5,
     padding: 16,
     marginBottom: 5,
     elevation: 2,
