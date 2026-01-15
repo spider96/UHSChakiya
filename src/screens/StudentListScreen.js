@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import StudentListStyles from '../style/StudentListStyles';
 import SubHeader from '../components/SubHeader';
-
+import { getStudents } from '../services/studentService';
 // Dummy data
 const DUMMY_STUDENTS = [
   {
@@ -96,12 +96,28 @@ const DUMMY_STUDENTS = [
   },
 ];
 
+
+
+  const getStudentsData = async () => {
+
+    setLoading(true);
+    try {
+      await getStudents(student);
+    } catch (error) {
+      console.error('Failed to load student:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 export default function StudentListScreen({ onNavigate }) {
   const [filterClass, setFilterClass] = useState('');
   const [searchName, setSearchName] = useState('');
   const [students, setStudents] = useState(DUMMY_STUDENTS);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+  getStudents()
 
   const classes = useMemo(() => {
     return [...new Set(DUMMY_STUDENTS.map(s => s.className))].sort();
