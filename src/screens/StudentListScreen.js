@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -12,6 +12,8 @@ import {
 import StudentListStyles from '../style/StudentListStyles';
 import SubHeader from '../components/SubHeader';
 import { getStudents } from '../services/studentService';
+import { getImage } from '../services/MediaService';
+//const [loading, setLoading] = useState(false);
 // Dummy data
 const DUMMY_STUDENTS = [
   {
@@ -19,105 +21,144 @@ const DUMMY_STUDENTS = [
     name: 'Ahmed Ali',
     fatherName: 'Ali Khan',
     className: '10-A',
+    section: 'A',
     rollNumber: '01',
     dateOfBirth: '2008-05-15',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '1234-5678-9012',
     bankAccount: '1001234567890',
+    mobileNumber: '8787586576'
   },
   {
     id: 2,
     name: 'Fatima Hassan',
     fatherName: 'Hassan Ahmed',
     className: '10-A',
+    section: 'A',
     rollNumber: '02',
     dateOfBirth: '2008-08-22',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '2345-6789-0123',
     bankAccount: '1002345678901',
+    mobileNumber: '8787586576'
   },
   {
     id: 3,
     name: 'Muhammad Usman',
     fatherName: 'Usman Ali',
     className: '10-B',
+    section: 'A',
     rollNumber: '03',
     dateOfBirth: '2008-03-10',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '3456-7890-1234',
     bankAccount: '1003456789012',
+    mobileNumber: '8787586576'
   },
   {
     id: 4,
     name: 'Aisha Khan',
     fatherName: 'Khan Malik',
     className: '10-A',
+    section: 'A',
     rollNumber: '04',
     dateOfBirth: '2008-11-05',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '4567-8901-2345',
     bankAccount: '1004567890123',
+    mobileNumber: '8787586576'
   },
   {
     id: 5,
     name: 'Hassan Ibrahim',
     fatherName: 'Ibrahim Ali',
     className: '10-B',
+    section: 'A',
     rollNumber: '05',
     dateOfBirth: '2008-07-18',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '5678-9012-3456',
     bankAccount: '1005678901234',
+    mobileNumber: '8787586576'
   },
   {
     id: 6,
     name: 'Mariam Hassan',
     fatherName: 'Hassan Ahmed',
     className: '10-C',
+    section: 'A',
     rollNumber: '06',
     dateOfBirth: '2008-09-12',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '6789-0123-4567',
     bankAccount: '1006789012345',
+    mobileNumber: '8787586576'
   },
   {
     id: 7,
     name: 'Ali Raza',
     fatherName: 'Raza Khan',
     className: '10-B',
+    section: 'A',
     rollNumber: '07',
     dateOfBirth: '2008-02-28',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '7890-1234-5678',
     bankAccount: '1007890123456',
+    mobileNumber: '8787586576'
   },
   {
     id: 8,
     name: 'Zainab Ali',
     fatherName: 'Ali Khan',
     className: '10-C',
+    section: 'A',
     rollNumber: '08',
     dateOfBirth: '2008-06-14',
+    admissionNumber: '23/2025',
+    admissionDate: '2025-01-23',
     aadhar: '8901-2345-6789',
     bankAccount: '1008901234567',
+    mobileNumber: '8787586576'
   },
 ];
 
 
-
-  const getStudentsData = async () => {
-
-    setLoading(true);
-    try {
-      await getStudents(student);
-    } catch (error) {
-      console.error('Failed to load student:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
 export default function StudentListScreen({ onNavigate }) {
   const [filterClass, setFilterClass] = useState('');
   const [searchName, setSearchName] = useState('');
-  const [students, setStudents] = useState(DUMMY_STUDENTS);
+  const [students, setStudents] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [dispImage, setDispImage] = useState(null);
 
-  getStudents()
+
+
+  useEffect(() => {
+    const loadStudents = async () => {
+      setLoading(true);
+      try {
+        const response = await getStudents(); // API call
+        setStudents(response || []);          // safe fallback
+      } catch (error) {
+        console.error('Failed to load students:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStudents();
+  }, []);
+
+
 
   const classes = useMemo(() => {
     return [...new Set(DUMMY_STUDENTS.map(s => s.className))].sort();
@@ -169,26 +210,31 @@ export default function StudentListScreen({ onNavigate }) {
     );
   };
 
-  const openView = student => {
+  const openView = async student => {
     setSelectedStudent(student);
+    if (
+      student?.image &&
+      (student.image.endsWith('.jpg') ||
+        student.image.endsWith('.png') ||
+        student.image.endsWith('.jpeg'))
+    ) {
+      setDispImage(await getImage(student.image));
+    }
+
     setModalVisible(true);
   };
 
   const closeModal = () => {
     setModalVisible(false);
     setSelectedStudent(null);
+    setDispImage(null);
   };
 
   return (
     <View style={StudentListStyles.container}>
       {/* Header */}
       <SubHeader title="Students" />
-      {/* <View style={StudentListStyles.header}>
-        <Text style={StudentListStyles.headerTitle}>Students</Text>
-        <Text style={StudentListStyles.headerSubtitle}>
-          View and manage all students
-        </Text>
-      </View> */}
+
 
       {/* Content */}
       <ScrollView
@@ -222,47 +268,175 @@ export default function StudentListScreen({ onNavigate }) {
         >
           <View style={StudentListStyles.modalOverlay}>
             <View style={StudentListStyles.modalCard}>
-              <View style={StudentListStyles.profileHeader}>
-                <Image
-                  source={{ uri: selectedStudent?.image || 'https://via.placeholder.com/84' }}
-                  style={StudentListStyles.profileImage}
-                />
-                <View>
-                  <Text style={StudentListStyles.profileName}>{selectedStudent?.name}</Text>
-                  <Text style={{ color: '#666', fontSize: 12 }}>
-                    {selectedStudent?.className} • Roll {selectedStudent?.rollNumber}
-                  </Text>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={StudentListStyles.profileHeader}>
+                  <Image
+                    source={{ uri: dispImage || 'https://via.placeholder.com/84' }}
+                    style={StudentListStyles.profileImage}
+                  />
+                  <View>
+                    <Text style={StudentListStyles.profileName}>{selectedStudent?.name}</Text>
+                    <Text style={{ color: '#666', fontSize: 12 }}>
+                      {selectedStudent?.className} • Roll {selectedStudent?.rollNumber}
+                    </Text>
+                  </View>
                 </View>
-              </View>
 
-              <View style={StudentListStyles.profileRow}>
-                <Text style={StudentListStyles.profileLabel}>Father</Text>
-                <Text style={StudentListStyles.profileValue}>{selectedStudent?.fatherName}</Text>
-              </View>
-              <View style={StudentListStyles.profileRow}>
-                <Text style={StudentListStyles.profileLabel}>DOB</Text>
-                <Text style={StudentListStyles.profileValue}>{selectedStudent?.dateOfBirth}</Text>
-              </View>
-              <View style={StudentListStyles.profileRow}>
-                <Text style={StudentListStyles.profileLabel}>Aadhar</Text>
-                <Text style={StudentListStyles.profileValue}>{selectedStudent?.aadhar}</Text>
-              </View>
-              <View style={StudentListStyles.profileRow}>
-                <Text style={StudentListStyles.profileLabel}>Bank Account</Text>
-                <Text style={StudentListStyles.profileValue}>{selectedStudent?.bankAccount}</Text>
-              </View>
 
-              <View style={StudentListStyles.modalActions}>
-                <TouchableOpacity style={StudentListStyles.closeButton} onPress={closeModal}>
-                  <Text style={StudentListStyles.closeButtonText}>Close</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={StudentListStyles.editButton} onPress={() => { closeModal(); handleEdit(selectedStudent); }}>
-                  <Text style={StudentListStyles.editButtonText}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={StudentListStyles.deleteButton} onPress={() => { closeModal(); handleDelete(selectedStudent); }}>
-                  <Text style={StudentListStyles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
+                <View style={{
+                  borderBottomWidth: 2,
+                  borderBottomColor: '#3d3d3d', // blue line
+                  paddingBottom: 4,
+                  //alignSelf: 'flex-start'
+                  paddingVertical: 16
+                }}>
+                  <Text style={{ color: '#007BFF', fontWeight: 'bold', fontSize: 16 }}>Personal Information</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Father</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.fatherName}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Mother</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.motherName}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>DOB</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.dateOfBirth}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Gender</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.gender}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Aadhar</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.isAadhar}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Aadhar Number</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.aadharNumber}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Social Category</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.socialCategory}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Religion</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.religion}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Mobile</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.mobileNumber}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Email</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.email
+                  }</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Address</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.address
+                  }</Text>
+                </View>
+
+                <View style={{
+                  borderBottomWidth: 2,
+                  borderBottomColor: '#3d3d3d', // blue line
+                  paddingBottom: 4,
+                  //alignSelf: 'flex-start'
+                  paddingVertical: 16
+                }}>
+                  <Text style={{ color: '#007BFF', fontWeight: 'bold', fontSize: 16 }}>Academic Information</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>District</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.district}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Block</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.block}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>School</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.school}</Text>
+                </View>
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Session</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.session}</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Class</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.className}</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Section</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.section}</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Roll</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.rollNumber}</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Admission Number</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.admissionNumber}</Text>
+                </View>
+
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Admission Date</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.dateOfAdmission}</Text>
+                </View>
+
+                <View style={{
+                  borderBottomWidth: 2,
+                  borderBottomColor: '#3d3d3d', // blue line
+                  paddingBottom: 4,
+                  //alignSelf: 'flex-start'
+                  paddingVertical: 16
+                }}>
+                  <Text style={{ color: '#007BFF', fontWeight: 'bold', fontSize: 16 }}>Banking Information</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Account Number</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.accountNo}</Text>
+                </View>
+
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Account Holer Name</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.accountHolderName}</Text>
+                </View>
+
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>Bank Name</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.studentBankName}</Text>
+                </View>
+
+                <View style={StudentListStyles.profileRow}>
+                  <Text style={StudentListStyles.profileLabel}>IFSC</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.ifsc}</Text>
+                </View>
+
+                <View style={StudentListStyles.modalActions}>
+                  <TouchableOpacity style={StudentListStyles.closeButton} onPress={closeModal}>
+                    <Text style={StudentListStyles.closeButtonText}>Close</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={StudentListStyles.editButton} onPress={() => { closeModal(); handleEdit(selectedStudent); }}>
+                    <Text style={StudentListStyles.editButtonText}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={StudentListStyles.deleteButton} onPress={() => { closeModal(); handleDelete(selectedStudent); }}>
+                    <Text style={StudentListStyles.deleteButtonText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
           </View>
         </Modal>
@@ -370,19 +544,28 @@ export default function StudentListScreen({ onNavigate }) {
                   <View style={[StudentListStyles.headerCell, { width: 80 }]}>
                     <Text style={StudentListStyles.headerCellText}>Class</Text>
                   </View>
+                  <View style={[StudentListStyles.headerCell, { width: 80 }]}>
+                    <Text style={StudentListStyles.headerCellText}>Section</Text>
+                  </View>
                   <View style={[StudentListStyles.headerCell, { width: 60 }]}>
                     <Text style={StudentListStyles.headerCellText}>Roll</Text>
                   </View>
                   <View style={[StudentListStyles.headerCell, { width: 100 }]}>
                     <Text style={StudentListStyles.headerCellText}>Father</Text>
                   </View>
-                  <View style={[StudentListStyles.headerCell, { width: 110 }]}>
-                    <Text style={StudentListStyles.headerCellText}>Aadhar</Text>
+                  <View style={[StudentListStyles.headerCell, { width: 100 }]}>
+                    <Text style={StudentListStyles.headerCellText}>Date Of Birth</Text>
                   </View>
                   <View style={[StudentListStyles.headerCell, { width: 130 }]}>
-                    <Text style={StudentListStyles.headerCellText}>Bank Account</Text>
+                    <Text style={StudentListStyles.headerCellText}>Admission Number</Text>
                   </View>
-                  <View style={[StudentListStyles.headerCell, { width: 100 }]}>
+                  <View style={[StudentListStyles.headerCell, { width: 130 }]}>
+                    <Text style={StudentListStyles.headerCellText}>Admission Date</Text>
+                  </View>
+                  <View style={[StudentListStyles.headerCell, { width: 130 }]}>
+                    <Text style={StudentListStyles.headerCellText}>Mobile Number</Text>
+                  </View>
+                  <View style={[StudentListStyles.headerCell, { width: 130 }]}>
                     <Text style={StudentListStyles.headerCellText}>Action</Text>
                   </View>
                 </View>
@@ -411,6 +594,11 @@ export default function StudentListScreen({ onNavigate }) {
                         {student.className}
                       </Text>
                     </View>
+                    <View style={[StudentListStyles.tableCell, { width: 80 }]}>
+                      <Text style={StudentListStyles.tableCellText}>
+                        {student.section}
+                      </Text>
+                    </View>
                     <View style={[StudentListStyles.tableCell, { width: 60 }]}>
                       <Text style={StudentListStyles.tableCellText}>
                         {student.rollNumber}
@@ -421,17 +609,29 @@ export default function StudentListScreen({ onNavigate }) {
                         {student.fatherName.split(' ')[0]}
                       </Text>
                     </View>
-                    <View style={[StudentListStyles.tableCell, { width: 110 }]}>
+                    <View style={[StudentListStyles.tableCell, { width: 100 }]}>
                       <Text style={[StudentListStyles.tableCellText, { fontSize: 10 }]}>
-                        {student.aadhar}
+                        {student.dateOfBirth}
                       </Text>
                     </View>
                     <View style={[StudentListStyles.tableCell, { width: 130 }]}>
                       <Text style={[StudentListStyles.tableCellText, { fontSize: 9 }]}>
-                        {student.bankAccount}
+                        {student.admissionNumber}
                       </Text>
                     </View>
-                    <View style={[StudentListStyles.actionCell, { width: 140, marginLeft: 0 }]}>
+                    <View style={[StudentListStyles.tableCell, { width: 130 }]}>
+                      <Text style={[StudentListStyles.tableCellText, { fontSize: 9 }]}>
+                        {student.admissionDate}
+                      </Text>
+                    </View>
+
+                    <View style={[StudentListStyles.tableCell, { width: 130 }]}>
+                      <Text style={[StudentListStyles.tableCellText, { fontSize: 9 }]}>
+                        {student.mobileNumber}
+                      </Text>
+                    </View>
+
+                    <View style={[StudentListStyles.actionCell, { width: 130, marginLeft: 0 }]}>
                       <TouchableOpacity
                         style={StudentListStyles.editButton}
                         onPress={() => openView(student)}
