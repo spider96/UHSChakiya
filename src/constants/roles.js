@@ -13,11 +13,3 @@ export const ROLE_PERMISSIONS = {
   [USER_ROLES.VIEWER]: ['read'],
 };
 
-export const COLORS = {
-  PRIMARY: '#4A90E2',
-  SECONDARY: '#50E3C2',
-  ADMIN: '#FF5733',
-  TEACHER: '#33C1FF',
-  VIEWER: '#75FF33',
-  GUEST: '#CCCCCC',
-};

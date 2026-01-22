@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -15,8 +15,16 @@ import AddStudentStyles from '../style/AddStudentStyles';
 import SubHeader from '../components/SubHeader';
 import { getImage } from '../services/MediaService';
 import { handleImageUpload } from '../utils/utils';
+import { getSchoolClasses } from '../services/classService';
 
 export default function AddStudentScreen({ onNavigate }) {
+
+  const [studentClass,setStudentClass] = useState({
+        studentId:'',
+        schoolClassId:'',
+        rollNumber:''
+  })
+
   const [student, setStudent] = useState({
     //personal    
     isAadhar: true,
@@ -55,6 +63,24 @@ export default function AddStudentScreen({ onNavigate }) {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [studentImage, setStudentImage] = useState(null);
+  const [schoolClasses, setschoolClasses] = useState(null)
+
+
+  useEffect(() => {
+    const loadSchoolClasses = async () => {
+      setLoading(true);
+      try {
+        const response = await getSchoolClasses(2); // API call
+        setschoolClasses(response || []);          // safe fallback
+      } catch (error) {
+        console.error('Failed to load students:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadSchoolClasses();
+  }, []);
+
 
   const updateField = (field, value) => {
     setStudent(prev => ({
