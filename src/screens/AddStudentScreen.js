@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -10,19 +10,22 @@ import {
   Image,
   Alert,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { addStudent } from '../services/studentService';
 import AddStudentStyles from '../style/AddStudentStyles';
 import SubHeader from '../components/SubHeader';
+import MaterialDropdown from '../components/MaterialDropdown'
 import { getImage } from '../services/MediaService';
 import { handleImageUpload } from '../utils/utils';
 import { getSchoolClasses } from '../services/classService';
+import { Import } from 'lucide-react-native';
 
 export default function AddStudentScreen({ onNavigate }) {
 
-  const [studentClass,setStudentClass] = useState({
-        studentId:'',
-        schoolClassId:'',
-        rollNumber:''
+  const [studentClass, setStudentClass] = useState({
+    studentId: '',
+    schoolClassId: '',
+    rollNumber: ''
   })
 
   const [student, setStudent] = useState({
@@ -34,7 +37,7 @@ export default function AddStudentScreen({ onNavigate }) {
     dateOfBirth: '',
     fatherName: '',
     motherName: '',
-    gender:'',
+    gender: '',
     socialCategory: '',
     religion: '',
     address: '',
@@ -64,7 +67,9 @@ export default function AddStudentScreen({ onNavigate }) {
   const [image, setImage] = useState(null);
   const [studentImage, setStudentImage] = useState(null);
   const [schoolClasses, setschoolClasses] = useState(null)
-
+  const [sessions, setSessions] = useState(['2025-26', '2026-27']);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
 
   useEffect(() => {
     const loadSchoolClasses = async () => {
@@ -80,6 +85,35 @@ export default function AddStudentScreen({ onNavigate }) {
     };
     loadSchoolClasses();
   }, []);
+
+  // 🔹 When session changes → load classes
+  useEffect(() => {
+    if (!student.session) return;
+
+    const filtered = schoolClasses.filter(
+      c => c.academicYear === student.session
+    );
+
+    const uniqueClasses = [...new Set(filtered.map(c => c.className))];
+    setClasses(uniqueClasses);
+    setSections([]);
+    setStudent(prev => ({ ...prev, className: '', section: '' }));
+  }, [student.session]);
+
+  // 🔹 When class changes → load sections
+  useEffect(() => {
+    if (!student.className) return;
+
+    const filtered = schoolClasses.filter(
+      c =>
+        c.academicYear === student.session &&
+        c.className === student.className
+    );
+
+    const uniqueSections = [...new Set(filtered.map(c => c.section))];
+    setSections(uniqueSections);
+    setStudent(prev => ({ ...prev, section: '' }));
+  }, [student.className]);
 
 
   const updateField = (field, value) => {
@@ -418,7 +452,7 @@ export default function AddStudentScreen({ onNavigate }) {
               <Text style={AddStudentStyles.label}>Address *</Text>
               <TextInput
                 style={[
-                  AddStudentStyles.input,                                                                                       
+                  AddStudentStyles.input,
                   errors.address && AddStudentStyles.inputError, AddStudentStyles.multilineInput
                 ]}
                 placeholder="Enter Address"
@@ -497,7 +531,7 @@ export default function AddStudentScreen({ onNavigate }) {
 
             {/* Class and Roll No Row */}
             <View style={AddStudentStyles.rowContainer}>
-              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+              {/* <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Session *</Text>
                 <TextInput
                   style={[
@@ -510,6 +544,29 @@ export default function AddStudentScreen({ onNavigate }) {
                   onChangeText={v => updateField('session', v)}
                   editable={!loading}
                 />
+                {errors.session && (
+                  <Text style={AddStudentStyles.errorText}>{errors.session}</Text>
+                )}
+              </View> */}
+
+
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+                <Text style={AddStudentStyles.label}>Session *</Text>
+                  <MaterialDropdown />
+                {/* <Picker
+                  selectedValue={student.session}
+                  onValueChange={(value) => updateField('session', value)}
+                  style={AddStudentStyles.picker}
+                >select session
+                  <Picker.Item label="Select Academic Year" value="" />
+                  {sessions.map(session => (
+                    <Picker.Item
+                      key={session}
+                      label={session}
+                      value={session}
+                    />
+                  ))}
+                </Picker> */}
                 {errors.session && (
                   <Text style={AddStudentStyles.errorText}>{errors.session}</Text>
                 )}
@@ -535,7 +592,7 @@ export default function AddStudentScreen({ onNavigate }) {
               </View>
             </View>
 
-             <View style={AddStudentStyles.rowContainer}>
+            <View style={AddStudentStyles.rowContainer}>
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Admission Date *</Text>
                 <TextInput
@@ -574,7 +631,7 @@ export default function AddStudentScreen({ onNavigate }) {
               </View>
             </View>
 
-             <View style={AddStudentStyles.rowContainer}>
+            <View style={AddStudentStyles.rowContainer}>
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Section *</Text>
                 <TextInput

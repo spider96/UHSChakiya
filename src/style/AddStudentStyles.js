@@ -185,6 +185,10 @@ const AddStudentStyles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
+   picker: {
+    height: 20,
+    width: '100%',
+  },
 });
 
 export default AddStudentStyles;
