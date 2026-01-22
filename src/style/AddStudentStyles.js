@@ -59,19 +59,21 @@ const AddStudentStyles = StyleSheet.create({
     marginBottom: 6,
   },
   input: {
+    height: 44,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+   // paddingVertical: 10,
     fontSize: 14,
     color: '#333',
     backgroundColor: '#f9f9f9',
   },
   multilineInput: {
     minHeight: 100,
-    paddingVertical: 12,
+    paddingVertical: 10,
     textAlignVertical: 'top',
+    marginBottom: 50,
   },
   inputFocused: {
     borderColor: '#004a99',

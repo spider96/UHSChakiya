@@ -64,7 +64,7 @@ const handleLoginSuccess = async (userData) => {
     switch (activeScreen) {
       case 'HOME': return <HomeContent onNavigate={handleNavigation} />;
       case 'PROFILE': return <Profile />;
-      case 'TEACHERS': return <TeacherDashboard />;
+      case 'TEACHERS': return <TeacherDashboard onNavigate={handleNavigation} />;
       case 'STUDENTS': return <StudentDashboard onNavigate={handleNavigation} />;
       case 'ADD_STUDENT': return <AddStudentScreen onNavigate={handleNavigation} />;
       case 'STUDENT_LIST': return <StudentListScreen onNavigate={handleNavigation} />;

@@ -46,7 +46,7 @@ export default function StudentListScreen({ onNavigate }) {
 
 
   const classes = useMemo(() => {
-    return [...new Set(DUMMY_STUDENTS.map(s => s.className))].sort();
+    return [...new Set(students.map(s => s.className))].sort();
   }, []);
 
   const filteredStudents = useMemo(() => {
@@ -221,7 +221,7 @@ export default function StudentListScreen({ onNavigate }) {
                 </View>
                 <View style={StudentListStyles.profileRow}>
                   <Text style={StudentListStyles.profileLabel}>Address</Text>
-                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.address
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.studentAddress
                   }</Text>
                 </View>
 
@@ -245,11 +245,11 @@ export default function StudentListScreen({ onNavigate }) {
                 </View>
                 <View style={StudentListStyles.profileRow}>
                   <Text style={StudentListStyles.profileLabel}>School</Text>
-                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.school}</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.schoolName}</Text>
                 </View>
                 <View style={StudentListStyles.profileRow}>
                   <Text style={StudentListStyles.profileLabel}>Session</Text>
-                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.session}</Text>
+                  <Text style={StudentListStyles.profileValue}>{selectedStudent?.academicYear}</Text>
                 </View>
 
                 <View style={StudentListStyles.profileRow}>
@@ -506,7 +506,7 @@ export default function StudentListScreen({ onNavigate }) {
                     </View>
                     <View style={[StudentListStyles.tableCell, { width: 130 }]}>
                       <Text style={[StudentListStyles.tableCellText, { fontSize: 9 }]}>
-                        {student.admissionDate}
+                        {student.dateOfAdmission}
                       </Text>
                     </View>
 

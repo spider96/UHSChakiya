@@ -10,25 +10,24 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+
 import { addStudent } from '../services/studentService';
 import AddStudentStyles from '../style/AddStudentStyles';
 import SubHeader from '../components/SubHeader';
-import MaterialDropdown from '../components/MaterialDropdown'
+import DropdownComponent from '../components/Dropdown';
 import { getImage } from '../services/MediaService';
 import { handleImageUpload } from '../utils/utils';
 import { getSchoolClasses } from '../services/classService';
+import DatePickerInput from '../components/DatePickerInput';
+
 import { Import } from 'lucide-react-native';
 
 export default function AddStudentScreen({ onNavigate }) {
 
-  const [studentClass, setStudentClass] = useState({
-    studentId: '',
-    schoolClassId: '',
-    rollNumber: ''
-  })
+  const hideDatePicker = () => setDatePickerVisibility(false);
 
   const [student, setStudent] = useState({
+    schoolId: 1,
     //personal    
     isAadhar: true,
     aadharNumber: '',
@@ -40,7 +39,7 @@ export default function AddStudentScreen({ onNavigate }) {
     gender: '',
     socialCategory: '',
     religion: '',
-    address: '',
+    studentAddress: '',
     mobileNumber: '',
     email: '',
     //educational
@@ -48,6 +47,8 @@ export default function AddStudentScreen({ onNavigate }) {
     district: '',
     block: '',
     school: 'U',
+    schoolName: '',
+    schoolClassId: '',
     className: '',
     section: '',
     admissionNumber: '',
@@ -67,15 +68,17 @@ export default function AddStudentScreen({ onNavigate }) {
   const [image, setImage] = useState(null);
   const [studentImage, setStudentImage] = useState(null);
   const [schoolClasses, setschoolClasses] = useState(null)
-  const [sessions, setSessions] = useState(['2025-26', '2026-27']);
+  const [sessions, setSessions] = useState([]);
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
+
+
 
   useEffect(() => {
     const loadSchoolClasses = async () => {
       setLoading(true);
       try {
-        const response = await getSchoolClasses(2); // API call
+        const response = await getSchoolClasses(1); // API call
         setschoolClasses(response || []);          // safe fallback
       } catch (error) {
         console.error('Failed to load students:', error);
@@ -86,32 +89,55 @@ export default function AddStudentScreen({ onNavigate }) {
     loadSchoolClasses();
   }, []);
 
-  // 🔹 When session changes → load classes
+  // 1. Extract Unique Sessions from raw API data
   useEffect(() => {
-    if (!student.session) return;
+    if (schoolClasses && schoolClasses.length > 0) {
+      const uniqueYears = [...new Set(schoolClasses.map(item => item.academicYear))];
+      setSessions(uniqueYears.map(year => ({ label: year, value: year })));
+    }
+  }, [schoolClasses]);
 
-    const filtered = schoolClasses.filter(
-      c => c.academicYear === student.session
-    );
+  // 2. When Session changes -> Filter Unique Classes
+  useEffect(() => {
+    if (!student.session) {
+      setClasses([]);
+      return;
+    }
 
-    const uniqueClasses = [...new Set(filtered.map(c => c.className))];
+    const filtered = schoolClasses
+      .filter(item => item.academicYear === student.session)
+      .map(item => item.className);
+
+    const uniqueClasses = [...new Set(filtered)].sort().map(cls => ({
+      label: `Class ${cls}`,
+      value: cls
+    }));
+
     setClasses(uniqueClasses);
+    // Reset downstream selections
     setSections([]);
     setStudent(prev => ({ ...prev, className: '', section: '' }));
   }, [student.session]);
 
-  // 🔹 When class changes → load sections
+  // 3. When Class changes -> Filter Sections
   useEffect(() => {
-    if (!student.className) return;
+    if (!student.className) {
+      setSections([]);
+      return;
+    }
 
-    const filtered = schoolClasses.filter(
-      c =>
-        c.academicYear === student.session &&
-        c.className === student.className
-    );
+    const filteredSections = schoolClasses
+      .filter(item =>
+        item.academicYear === student.session &&
+        item.className === student.className
+      )
+      .map(item => ({
+        label: `Section ${item.section}`,
+        // value: item.section
+        value: item.id
+      }));
 
-    const uniqueSections = [...new Set(filtered.map(c => c.section))];
-    setSections(uniqueSections);
+    setSections(filteredSections);
     setStudent(prev => ({ ...prev, section: '' }));
   }, [student.className]);
 
@@ -129,6 +155,7 @@ export default function AddStudentScreen({ onNavigate }) {
       }));
     }
   };
+  
 
   const validateForm = () => {
     const newErrors = {};
@@ -354,18 +381,14 @@ export default function AddStudentScreen({ onNavigate }) {
 
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Date Of Birth *</Text>
-                <TextInput
-                  style={[
-                    AddStudentStyles.input,
-                    errors.dateOfBirth && AddStudentStyles.inputError,
-                  ]}
-                  placeholder="12/01/2000"
-                  placeholderTextColor="#999"
+                <DatePickerInput
+                  label="Date Of Birth *"
                   value={student.dateOfBirth}
-                  onChangeText={v => updateField('dateOfBirth', v)}
-                  editable={!loading}
-                //  keyboardType="numeric"
+                  onChange={(val) => updateField('dateOfBirth', val)}
+                  error={errors.dateOfBirth}
+                  placeholder="YYYY-MM-DD"
                 />
+
                 {errors.dateOfBirth && (
                   <Text style={AddStudentStyles.errorText}>{errors.dateOfBirth}</Text>
                 )}
@@ -453,18 +476,18 @@ export default function AddStudentScreen({ onNavigate }) {
               <TextInput
                 style={[
                   AddStudentStyles.input,
-                  errors.address && AddStudentStyles.inputError, AddStudentStyles.multilineInput
+                  errors.studentAddress && AddStudentStyles.inputError, AddStudentStyles.multilineInput
                 ]}
                 placeholder="Enter Address"
                 placeholderTextColor="#999"
-                value={student.address}
+                value={student.studentAddress}
                 multiline={true}
                 numberOfLines={4}
-                onChangeText={v => updateField('address', v)}
+                onChangeText={v => updateField('studentAddress', v)}
                 editable={!loading}
               />
-              {errors.address && (
-                <Text style={AddStudentStyles.errorText}>{errors.address}</Text>
+              {errors.studentAddress && (
+                <Text style={AddStudentStyles.errorText}>{errors.studentAddress}</Text>
               )}
             </View>
 
@@ -531,46 +554,21 @@ export default function AddStudentScreen({ onNavigate }) {
 
             {/* Class and Roll No Row */}
             <View style={AddStudentStyles.rowContainer}>
-              {/* <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
+              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Session *</Text>
-                <TextInput
-                  style={[
-                    AddStudentStyles.input,
-                    errors.session && AddStudentStyles.inputError,
-                  ]}
-                  placeholder="e.g. 2025-26"
-                  placeholderTextColor="#999"
+                <DropdownComponent
+                  data={sessions} // Array of {label, value}
+                  placeholder="Select Session"
                   value={student.session}
-                  onChangeText={v => updateField('session', v)}
-                  editable={!loading}
+                  onChange={(val) => updateField('session', val)}
                 />
                 {errors.session && (
                   <Text style={AddStudentStyles.errorText}>{errors.session}</Text>
                 )}
-              </View> */}
-
-
-              <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
-                <Text style={AddStudentStyles.label}>Session *</Text>
-                  <MaterialDropdown />
-                {/* <Picker
-                  selectedValue={student.session}
-                  onValueChange={(value) => updateField('session', value)}
-                  style={AddStudentStyles.picker}
-                >select session
-                  <Picker.Item label="Select Academic Year" value="" />
-                  {sessions.map(session => (
-                    <Picker.Item
-                      key={session}
-                      label={session}
-                      value={session}
-                    />
-                  ))}
-                </Picker> */}
-                {errors.session && (
-                  <Text style={AddStudentStyles.errorText}>{errors.session}</Text>
-                )}
               </View>
+
+
+
 
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Admission Number *</Text>
@@ -595,35 +593,29 @@ export default function AddStudentScreen({ onNavigate }) {
             <View style={AddStudentStyles.rowContainer}>
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Admission Date *</Text>
-                <TextInput
-                  style={[
-                    AddStudentStyles.input,
-                    errors.dateOfAdmission && AddStudentStyles.inputError,
-                  ]}
-                  placeholder="dd/mm/yyyy"
-                  placeholderTextColor="#999"
+                <DatePickerInput
+                  label="Admission Date *"
                   value={student.dateOfAdmission}
-                  onChangeText={v => updateField('dateOfAdmission', v)}
-                  editable={!loading}
+                  onChange={(val) => updateField('dateOfAdmission', val)}
+                  error={errors.dateOfAdmission}
+                  placeholder="YYYY-MM-DD"
                 />
+
                 {errors.dateOfAdmission && (
                   <Text style={AddStudentStyles.errorText}>{errors.dateOfAdmission}</Text>
                 )}
+
               </View>
 
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Class *</Text>
-                <TextInput
-                  style={[
-                    AddStudentStyles.input,
-                    errors.className && AddStudentStyles.inputError,
-                  ]}
-                  placeholder="Class-09"
-                  placeholderTextColor="#999"
+                <DropdownComponent
+                  data={classes}
+                  placeholder={student.session ? "Select Class" : "Select Session First"}
                   value={student.className}
-                  onChangeText={v => updateField('className', v)}
-                  editable={!loading}
-                  keyboardType="numeric"
+                  onChange={(val) => updateField('className', val)}
+                  disable={!student.session}
+                  error={errors.className}
                 />
                 {errors.className && (
                   <Text style={AddStudentStyles.errorText}>{errors.className}</Text>
@@ -634,16 +626,17 @@ export default function AddStudentScreen({ onNavigate }) {
             <View style={AddStudentStyles.rowContainer}>
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
                 <Text style={AddStudentStyles.label}>Section *</Text>
-                <TextInput
-                  style={[
-                    AddStudentStyles.input,
-                    errors.section && AddStudentStyles.inputError,
-                  ]}
-                  placeholder="e.g. A"
-                  placeholderTextColor="#999"
+                <DropdownComponent
+                  data={sections}
+                  placeholder={student.className ? "Select Section" : "Select Class First"}
                   value={student.section}
-                  onChangeText={v => updateField('section', v)}
-                  editable={!loading}
+                  onChange={(val) => {
+                    updateField('section', val);
+                    updateField('schoolClassId', val);
+
+                  }}
+                  disable={!student.className}
+                  error={errors.className}
                 />
                 {errors.section && (
                   <Text style={AddStudentStyles.errorText}>{errors.section}</Text>

@@ -19,7 +19,7 @@ export default function TeacherDashboard({ onNavigate }) {
           title="Add Teacher" 
           icon={Plus} 
           color="#4F46E5" // Indigo
-          onPress={() => onNavigate('ADD_TEACHER')}
+          onPress={() => onNavigate('TEACHER')}
         />
         <ActionCard 
           title="Update Profile" 
