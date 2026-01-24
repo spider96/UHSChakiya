@@ -20,9 +20,9 @@ const DUMMY_TEACHER_DATA = {
   active: true,
 };
 
-export const addTeacher = async (teacherData) => {
+export const addTeacher = async (teacherData,schoold) => {
   try {
-    const res = await apiClient.post('/user/create-teacher', {
+    const res = await apiClient.post('/user/create-teacher/'+`${schoold}`, {
       username: teacherData.username,
       name: teacherData.teacherName,
       emailId: teacherData.emailId,

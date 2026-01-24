@@ -92,7 +92,7 @@ export default function AddTeacherScreen({ onNavigate }) {
     setLoading(true);
     try {
       console.log('Teacher data:', teacher);
-      const teacherD = await addTeacher(teacher);
+      const teacherD = await addTeacher(teacher,2);
       // TODO: Replace with actual API call
       // await addTeacher(teacher);
       console.log('Teacher data:', teacher);

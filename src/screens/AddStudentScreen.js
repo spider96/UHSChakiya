@@ -78,7 +78,7 @@ export default function AddStudentScreen({ onNavigate }) {
     const loadSchoolClasses = async () => {
       setLoading(true);
       try {
-        const response = await getSchoolClasses(1); // API call
+        const response = await getSchoolClasses(2); // API call
         setschoolClasses(response || []);          // safe fallback
       } catch (error) {
         console.error('Failed to load students:', error);
