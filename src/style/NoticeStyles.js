@@ -17,13 +17,33 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  addButton: {
+    backgroundColor: '#0A5ED7',
+    marginHorizontal: 12,
+    marginVertical: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    elevation: 3,
+  },
+
+  addButtonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
   list: { padding: 12 },
 
   card: {
     backgroundColor: '#fff',
     borderRadius: 5,
     padding: 16,
-    marginBottom: 5,
+    marginBottom: 12,
     elevation: 2,
   },
 
@@ -85,9 +105,47 @@ export default StyleSheet.create({
     color: '#0B4DA2',
   },
 
-  loader: {
+  actionRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+
+  actionButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+  },
+
+  editButton: {
+    backgroundColor: '#0A5ED7',
+  },
+
+  deleteButton: {
+    backgroundColor: '#d32f2f',
+  },
+
+  actionButtonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
+  emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 60,
   },
-});
+  emptyText: {
+    fontSize: 16,
+    color: '#777',
+  },
+}); 

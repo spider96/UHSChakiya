@@ -12,11 +12,12 @@ import {
     UIManager,
     ActivityIndicator,
     RefreshControl,
+    Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { getNotices } from '../api/noticeService';
+import { getNotices, deleteNotice } from '../api/noticeService';
 //import { STORAGE_KEYS } from '../utils/storageKeys';
 
 if (Platform.OS === 'android') {
@@ -137,7 +138,7 @@ const isNewNotice = (createdAt) => {
 //         setExpanded(!expanded);
 //     };
 
-const NoticeCard = memo(({ item }) => {
+const NoticeCard = memo(({ item, onEdit, onDelete }) => {
     const [expanded, setExpanded] = useState(false);
     // 0 = collapsed, 1 = expanded
     const animationValue = useRef(new Animated.Value(0)).current;
@@ -161,45 +162,6 @@ const NoticeCard = memo(({ item }) => {
 
     // Use createdAt if available, otherwise fallback to date
     const displayDate = item.createdAt || item.date;
-
-    // return (
-    //     <View style={styles.card}>
-    //         <View style={styles.titleRow}>
-    //             <Icon name="campaign" size={22} color="#0B4DA2" />
-    //             <Text style={styles.title}>{item.title}</Text>
-    //             {isNewNotice(displayDate) && (
-    //                 <View style={styles.badge}>
-    //                     <Text style={styles.badgeText}>NEW</Text>
-    //                 </View>
-    //             )}
-    //         </View>
-
-    //         <Text style={styles.content}>
-    //             {expanded ? item.full : item.short}
-    //         </Text>
-
-    //         <View style={styles.footer}>
-    //             <View style={styles.dateRow}>
-    //                 <Icon name="event" size={16} color="#777" />
-    //                 <Text style={styles.date}>
-    //                     {displayDate ? new Date(displayDate).toDateString() : 'No Date'}
-    //                 </Text>
-    //             </View>
-
-    //             <TouchableOpacity onPress={toggle} style={styles.readMoreRow}>
-    //                 <Text style={styles.readMore}>
-    //                     {expanded ? 'Read Less' : 'Read More'}
-    //                 </Text>
-    //                 <Icon
-    //                     name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-    //                     size={22}
-    //                     color="#0B4DA2"
-    //                 />
-    //             </TouchableOpacity>
-    //         </View>
-    //     </View>
-    // );
-
 
     return (
         <View style={styles.card}>
@@ -237,12 +199,28 @@ const NoticeCard = memo(({ item }) => {
                     />
                 </TouchableOpacity>
             </View>
+
+            {/* Edit and Delete Buttons */}
+            <View style={styles.actionRow}>
+                <TouchableOpacity 
+                    style={[styles.actionButton, styles.editButton]}
+                    onPress={() => onEdit && onEdit(item.id)}
+                >
+                    <Text style={styles.actionButtonText}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={[styles.actionButton, styles.deleteButton]}
+                    onPress={() => onDelete && onDelete(item.id)}
+                >
+                    <Text style={styles.actionButtonText}>Delete</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 });
 
 /* ---------- Screen ---------- */
-const NoticeBoardScreen = () => {
+const NoticeBoardScreen = ({ onNavigate }) => {
     const [notices, setNotices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -283,6 +261,41 @@ const NoticeBoardScreen = () => {
         loadNotices();
     };
 
+    /* ---------- Handle Edit ---------- */
+    const handleEdit = (noticeId) => {
+        onNavigate && onNavigate('EDIT_NOTICE', { noticeId, allNotices: notices });
+    };
+
+    /* ---------- Handle Delete ---------- */
+    const handleDelete = (noticeId) => {
+        Alert.alert(
+            'Delete Notice',
+            'Are you sure you want to delete this notice?',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel pressed'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    onPress: async () => {
+                        try {
+                            await deleteNotice(noticeId);
+                            setNotices(notices.filter(n => n.id !== noticeId));
+                            Alert.alert('Success', 'Notice deleted successfully');
+                        } catch (error) {
+                            Alert.alert('Error', 'Failed to delete notice');
+                            console.error(error);
+                        }
+                    },
+                    style: 'destructive',
+                },
+            ],
+            { cancelable: false }
+        );
+    };
+
     if (loading) {
         return (
             <View style={styles.loader}>
@@ -293,33 +306,28 @@ const NoticeBoardScreen = () => {
 
     return (
         <View style={styles.container}>
-            {/* <View style={styles.header}>
-                <Icon name='av-timer' size={24} color="#fff" />
-                <Text style={styles.headerTitle}>Notice Board</Text>
-            </View> */}
-
             <SubHeader title="Notice Board" />
 
-            {/* <FlatList
-                data={notices}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <NoticeCard item={item} />}
-                contentContainerStyle={styles.list}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={['#0B4DA2']}
-                    />
-                }
-            /> */}
+            {/* Add Notice Button */}
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => onNavigate && onNavigate('ADD_NOTICE')}
+            >
+                <Icon name="add" size={24} color="white" />
+                <Text style={styles.addButtonText}>Add Notice</Text>
+            </TouchableOpacity>
 
             <FlatList
                 data={notices}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <NoticeCard item={item} />}
+                renderItem={({ item }) => (
+                    <NoticeCard 
+                        item={item}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                    />
+                )}
                 contentContainerStyle={styles.list}
-                // Optimization props:
                 removeClippedSubviews={true}
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}
@@ -331,8 +339,13 @@ const NoticeBoardScreen = () => {
                         colors={['#0B4DA2']}
                     />
                 }
+                ListEmptyComponent={
+                    <View style={styles.emptyContainer}>
+                        <Icon name="inbox" size={60} color="#ccc" />
+                        <Text style={styles.emptyText}>No notices available</Text>
+                    </View>
+                }
             />
-
         </View>
     );
 };

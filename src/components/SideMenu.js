@@ -116,7 +116,7 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
           ) : (
             <>
               <MenuLink icon={<User color="#004a99" size={22} />} label="Profile" onPress={() => onNavigate('PROFILE')} />
-              <MenuLink icon={<BookOpen color="#004a99" size={22} />} label="Academic Report" onPress={() => onNavigate('CALENDAR')} />
+              <MenuLink icon={<BookOpen color="#004a99" size={22} />} label="Academic Report" onPress={() => onNavigate('ACADEMIC_REPORT')} />
 
               <View style={styles.divider} />
 
