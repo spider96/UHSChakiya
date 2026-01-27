@@ -1,10 +1,10 @@
-import React, { useState, useEffect ,useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import styles from '../style/HomeStyles';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // Context
-import { AuthContext,AuthProvider } from '../auth/AuthContext';
+import { AuthContext, AuthProvider } from '../auth/AuthContext';
 
 // Screens
 import Header from '../screens/Header';
@@ -12,12 +12,18 @@ import Profile from './UserProfile';
 import TeacherDashboard from '../screens/TeacherDashboard';
 import StudentDashboard from '../screens/StudentDashboard';
 import AddStudentScreen from '../screens/AddStudentScreen';
-import AddTeacherScreen from '../screens/AddTeacherScreen'
-import UpdateTeacherScreen from '../screens/UpdateTeacherScreen'
+import AddTeacherScreen from '../screens/AddTeacherScreen';
+import UpdateTeacherScreen from '../screens/UpdateTeacherScreen';
 import StudentListScreen from '../screens/StudentListScreen';
 import HomeContent from '../screens/HomeContent';
 import LoginScreen from '../screens/LoginScreen';
 import NoticeScreen from '../screens/NoticeScreen';
+import AddNoticeScreen from '../screens/AddNoticeScreen';
+import AcademicReportDashboard from '../screens/AcademicReportDashboard';
+import AttendanceDashboard from '../screens/AttendanceDashboard';
+import MarkAttendanceScreen from '../screens/MarkAttendanceScreen';
+import ViewAttendanceScreen from '../screens/ViewAttendanceScreen';
+import AttendanceStatsScreen from '../screens/AttendanceStatsScreen';
 import SideMenu from '../components/SideMenu';
 
 import { USER_ROLES } from '../constants/roles';
@@ -26,15 +32,16 @@ function AppContent(navigation) {
   const { user, logout, login, isLoading } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeScreen, setActiveScreen] = useState('HOME');
+  const [navigationParams, setNavigationParams] = useState({});
 
   useEffect(() => {
     if (!user && activeScreen !== 'HOME' && activeScreen !== 'LOGIN') {
       setActiveScreen('HOME');
     }
-  }, [user]); 
+  }, [user]);
 
 
-const handleLogout = async () => {
+  const handleLogout = async () => {
     setIsMenuOpen(false);
     try {
       await logout(); // Clears storage and state globally
@@ -46,18 +53,19 @@ const handleLogout = async () => {
   };
 
 
-  const handleNavigation = (screen) => {
+  const handleNavigation = (screen, params = {}) => {
     // 1. Start closing the menu
     setIsMenuOpen(false);
-
-    // 2. Delay the screen swap slightly so it happens while the menu is sliding
-    setTimeout(() => {
-      setActiveScreen(screen);
-    }, 200);
+    // 2. Store any navigation params
+    if (params) {
+      setNavigationParams(params);
+    }
+    // 3. Switch screen immediately without delay
+    setActiveScreen(screen);
   };
 
 
-const handleLoginSuccess = async (userData) => {
+  const handleLoginSuccess = async (userData) => {
     await login(userData);
     setActiveScreen('HOME');
   };
@@ -72,9 +80,16 @@ const handleLoginSuccess = async (userData) => {
       case 'STUDENTS': return <StudentDashboard onNavigate={handleNavigation} />;
       case 'ADD_STUDENT': return <AddStudentScreen onNavigate={handleNavigation} />;
       case 'STUDENT_LIST': return <StudentListScreen onNavigate={handleNavigation} />;
-      case 'NOTICES': return <NoticeScreen  />;
+      case 'NOTICES': return <NoticeScreen onNavigate={handleNavigation} source={navigationParams?.source} />;
+      case 'ADD_NOTICE': return <AddNoticeScreen onNavigate={handleNavigation} source={navigationParams?.source} />;
+      case 'EDIT_NOTICE': return <AddNoticeScreen onNavigate={handleNavigation} source={navigationParams?.source} noticeId={navigationParams.noticeId} editMode={true} allNotices={navigationParams.allNotices} />;
+      case 'ACADEMIC_REPORT': return <AcademicReportDashboard onNavigate={handleNavigation} />;
+      case 'ATTENDANCE': return <AttendanceDashboard onNavigate={handleNavigation} />;
+      case 'MARK_ATTENDANCE': return <MarkAttendanceScreen onNavigate={handleNavigation} />;
+      case 'VIEW_ATTENDANCE': return <ViewAttendanceScreen onNavigate={handleNavigation} />;
+      case 'ATTENDANCE_STATS': return <AttendanceStatsScreen onNavigate={handleNavigation} />;
       case 'LOGIN': return <LoginScreen onNavigate={handleNavigation} onLoginSuccess={handleLoginSuccess} />;
-      default: return <HomeContent  onNavigate={handleNavigation}  />;
+      default: return <HomeContent onNavigate={handleNavigation} />;
     }
   };
 
