@@ -43,7 +43,7 @@ const NOTICE_DATA = [
     },
 ];
 
-export default function AddNoticeScreen({ onNavigate, noticeId, editMode = false, allNotices = [] }) {
+export default function AddNoticeScreen({ onNavigate, noticeId, editMode = false, allNotices = [], source = 'academic' }) {
   const [title, setTitle] = useState('');
   const [short, setShort] = useState('');
   const [full, setFull] = useState('');
@@ -151,7 +151,7 @@ export default function AddNoticeScreen({ onNavigate, noticeId, editMode = false
     setShort('');
     setFull('');
     if (onNavigate) {
-      onNavigate('NOTICES');
+      onNavigate('NOTICES', { source });
     }
   };
 

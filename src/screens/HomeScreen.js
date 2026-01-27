@@ -60,10 +60,8 @@ function AppContent(navigation) {
     if (params) {
       setNavigationParams(params);
     }
-    // 3. Delay the screen swap slightly so it happens while the menu is sliding
-    setTimeout(() => {
-      setActiveScreen(screen);
-    }, 200);
+    // 3. Switch screen immediately without delay
+    setActiveScreen(screen);
   };
 
 
@@ -82,9 +80,9 @@ function AppContent(navigation) {
       case 'STUDENTS': return <StudentDashboard onNavigate={handleNavigation} />;
       case 'ADD_STUDENT': return <AddStudentScreen onNavigate={handleNavigation} />;
       case 'STUDENT_LIST': return <StudentListScreen onNavigate={handleNavigation} />;
-      case 'NOTICES': return <NoticeScreen onNavigate={handleNavigation} />;
-      case 'ADD_NOTICE': return <AddNoticeScreen onNavigate={handleNavigation} />;
-      case 'EDIT_NOTICE': return <AddNoticeScreen onNavigate={handleNavigation} noticeId={navigationParams.noticeId} editMode={true} allNotices={navigationParams.allNotices} />;
+      case 'NOTICES': return <NoticeScreen onNavigate={handleNavigation} source={navigationParams?.source} />;
+      case 'ADD_NOTICE': return <AddNoticeScreen onNavigate={handleNavigation} source={navigationParams?.source} />;
+      case 'EDIT_NOTICE': return <AddNoticeScreen onNavigate={handleNavigation} source={navigationParams?.source} noticeId={navigationParams.noticeId} editMode={true} allNotices={navigationParams.allNotices} />;
       case 'ACADEMIC_REPORT': return <AcademicReportDashboard onNavigate={handleNavigation} />;
       case 'ATTENDANCE': return <AttendanceDashboard onNavigate={handleNavigation} />;
       case 'MARK_ATTENDANCE': return <MarkAttendanceScreen onNavigate={handleNavigation} />;

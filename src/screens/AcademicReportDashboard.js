@@ -17,7 +17,7 @@ export default function AcademicReportDashboard({ onNavigate }) {
           title="Notice Management" 
           icon={FileText} 
           color="#3B82F6" // Blue
-          onPress={() => onNavigate('NOTICES')}
+          onPress={() => onNavigate('NOTICES', { source: 'academic' })}
         />
         
         {/* Attendance Management */}

@@ -117,7 +117,7 @@ const HomeContent = ({onNavigate}) => {
               <Megaphone color="white" size={18} />
               <Text style={styles.noticeTitle}>Notice Board</Text>
             </View>
-            <TouchableOpacity style={styles.viewAllBtnHeader} onPress={() => onNavigate('NOTICES')}>
+            <TouchableOpacity style={styles.viewAllBtnHeader} onPress={() => onNavigate('NOTICES', { source: 'home' })}>
               <Text style={styles.viewAllTextHeader}>View All</Text>
               <ChevronRight color="#0056b3" size={14} />
             </TouchableOpacity>

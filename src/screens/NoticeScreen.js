@@ -138,7 +138,7 @@ const isNewNotice = (createdAt) => {
 //         setExpanded(!expanded);
 //     };
 
-const NoticeCard = memo(({ item, onEdit, onDelete }) => {
+const NoticeCard = memo(({ item, onEdit, onDelete, showActions }) => {
     const [expanded, setExpanded] = useState(false);
     // 0 = collapsed, 1 = expanded
     const animationValue = useRef(new Animated.Value(0)).current;
@@ -200,30 +200,35 @@ const NoticeCard = memo(({ item, onEdit, onDelete }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* Edit and Delete Buttons */}
-            <View style={styles.actionRow}>
-                <TouchableOpacity 
-                    style={[styles.actionButton, styles.editButton]}
-                    onPress={() => onEdit && onEdit(item.id)}
-                >
-                    <Text style={styles.actionButtonText}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    style={[styles.actionButton, styles.deleteButton]}
-                    onPress={() => onDelete && onDelete(item.id)}
-                >
-                    <Text style={styles.actionButtonText}>Delete</Text>
-                </TouchableOpacity>
-            </View>
+            {/* Edit and Delete Buttons - Only show if showActions is true */}
+            {showActions && (
+                <View style={styles.actionRow}>
+                    <TouchableOpacity 
+                        style={[styles.actionButton, styles.editButton]}
+                        onPress={() => onEdit && onEdit(item.id)}
+                    >
+                        <Text style={styles.actionButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={[styles.actionButton, styles.deleteButton]}
+                        onPress={() => onDelete && onDelete(item.id)}
+                    >
+                        <Text style={styles.actionButtonText}>Delete</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </View>
     );
 });
 
 /* ---------- Screen ---------- */
-const NoticeBoardScreen = ({ onNavigate }) => {
+const NoticeBoardScreen = ({ onNavigate, source }) => {
     const [notices, setNotices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+
+    // Only show action buttons if coming from academic dashboard
+    const showActions = source === 'academic';
 
     useEffect(() => {
         loadNotices();
@@ -263,7 +268,7 @@ const NoticeBoardScreen = ({ onNavigate }) => {
 
     /* ---------- Handle Edit ---------- */
     const handleEdit = (noticeId) => {
-        onNavigate && onNavigate('EDIT_NOTICE', { noticeId, allNotices: notices });
+        onNavigate && onNavigate('EDIT_NOTICE', { noticeId, allNotices: notices, source });
     };
 
     /* ---------- Handle Delete ---------- */
@@ -308,14 +313,16 @@ const NoticeBoardScreen = ({ onNavigate }) => {
         <View style={styles.container}>
             <SubHeader title="Notice Board" />
 
-            {/* Add Notice Button */}
-            <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => onNavigate && onNavigate('ADD_NOTICE')}
-            >
-                <Icon name="add" size={24} color="white" />
-                <Text style={styles.addButtonText}>Add Notice</Text>
-            </TouchableOpacity>
+            {/* Add Notice Button - Only show if coming from academic dashboard */}
+            {showActions && (
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => onNavigate && onNavigate('ADD_NOTICE', { source })}
+                >
+                    <Icon name="add" size={24} color="white" />
+                    <Text style={styles.addButtonText}>Add Notice</Text>
+                </TouchableOpacity>
+            )}
 
             <FlatList
                 data={notices}
@@ -325,6 +332,7 @@ const NoticeBoardScreen = ({ onNavigate }) => {
                         item={item}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        showActions={showActions}
                     />
                 )}
                 contentContainerStyle={styles.list}
