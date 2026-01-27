@@ -22,7 +22,7 @@ import DatePickerInput from '../components/DatePickerInput';
 
 import { Import } from 'lucide-react-native';
 
-export default function AddStudentScreen({ onNavigate }) {
+export default function AddStudentScreen({ navigation }) {
 
   const hideDatePicker = () => setDatePickerVisibility(false);
 
@@ -188,7 +188,7 @@ export default function AddStudentScreen({ onNavigate }) {
     setLoading(true);
     try {
       await addStudent(student);
-      onNavigate('STUDENTS');
+      navigation.pop();
     } catch (error) {
       console.error('Error adding student:', error);
       setErrors({ submit: 'Failed to add student. Please try again.' });
@@ -198,7 +198,7 @@ export default function AddStudentScreen({ onNavigate }) {
   };
 
   const handleCancel = () => {
-    onNavigate('STUDENTS');
+    navigation.pop();
   };
 
 

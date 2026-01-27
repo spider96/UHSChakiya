@@ -16,7 +16,7 @@ import SubHeader from '../components/SubHeader';
 import { getClasses, getStudentsByClass, markAttendance } from '../services/attendanceService';
 import AttendanceStyles from '../style/AttendanceStyles';
 
-export default function MarkAttendanceScreen({ onNavigate }) {
+export default function MarkAttendanceScreen({ navigation }) {
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [students, setStudents] = useState([]);
@@ -131,7 +131,7 @@ export default function MarkAttendanceScreen({ onNavigate }) {
       Alert.alert('Success', 'Attendance marked successfully!', [
         {
           text: 'OK',
-          onPress: () => onNavigate('HOME'),
+          onPress: () => navigation.getParent().navigate('HOME'),
         },
       ]);
     } catch (error) {
@@ -143,7 +143,7 @@ export default function MarkAttendanceScreen({ onNavigate }) {
   };
 
   const handleCancel = () => {
-    onNavigate('HOME');
+    navigation.pop();
   };
 
   const renderClassItem = ({ item }) => (

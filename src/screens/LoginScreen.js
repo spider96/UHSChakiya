@@ -14,7 +14,7 @@ import { AuthContext } from '../auth/AuthContext';
 import LoginStyles from '../style/LoginStyles';
 import SubHeader from '../components/SubHeader';
 
-export default function LoginScreen({ onNavigate, onLoginSuccess }) {
+export default function LoginScreen({ navigation, onLoginSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -50,8 +50,10 @@ export default function LoginScreen({ onNavigate, onLoginSuccess }) {
     try {
       const userData = await loginApi(username, password);
       await login(userData);
-      onLoginSuccess(userData);
-      onNavigate('HOME');
+      if (onLoginSuccess) {
+        onLoginSuccess(userData);
+      }
+      navigation.pop();
     } catch (error) {
       console.error('Login error:', error);
       setErrors({

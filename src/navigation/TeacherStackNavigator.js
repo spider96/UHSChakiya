@@ -1,14 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import StudentListScreen from '../screens/StudentListScreen';
-import AddStudentScreen from '../screens/AddStudentScreen';
-import StudentDetailScreen from '../screens/StudentDetailScreen';
-import StudentDashboard from '../screens/StudentDashboard';
+import TeacherDashboard from '../screens/TeacherDashboard';
+import AddTeacherScreen from '../screens/AddTeacherScreen';
+import UpdateTeacherScreen from '../screens/UpdateTeacherScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function StudentStackNavigator({ navigation }) {
+export default function TeacherStackNavigator({ navigation }) {
   const handleBeforeRemove = (e) => {
     // Only intercept GO_BACK when we're at the root screen
     if (e.data.action.type === 'GO_BACK') {
@@ -31,33 +30,27 @@ export default function StudentStackNavigator({ navigation }) {
 
   return (
     <Stack.Navigator
-      initialRouteName="StudentDashboardScreen"
+      initialRouteName="TeacherDashboardScreen"
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: 'white' },
         gestureEnabled: true,
-        gestureResponseDistance: 200,
+        cardStyle: { backgroundColor: 'white' }
       }}
     >
       <Stack.Screen
-        name="StudentDashboardScreen"
-        component={StudentDashboard}
-        options={{ title: 'Students' }}
+        name="TeacherDashboardScreen"
+        component={TeacherDashboard}
+        options={{ title: 'Teachers' }}
       />
       <Stack.Screen
-        name="StudentList"
-        component={StudentListScreen}
-        options={{ title: 'Students' }}
+        name="ADD_TEACHER"
+        component={AddTeacherScreen}
+        options={{ title: 'Add Teacher' }}
       />
       <Stack.Screen
-        name="ADD_STUDENT"
-        component={AddStudentScreen}
-        options={{ title: 'Add Student' }}
-      />
-      <Stack.Screen
-        name="StudentDetail"
-        component={StudentDetailScreen}
-        options={{ title: 'Student Details' }}
+        name="UPDATE_TEACHER"
+        component={UpdateTeacherScreen}
+        options={{ title: 'Update Teacher' }}
       />
     </Stack.Navigator>
   );

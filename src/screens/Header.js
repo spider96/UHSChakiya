@@ -2,9 +2,10 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, StatusBar ,Image} from 'react-native';
 import { Menu as MenuIcon, Menu } from 'lucide-react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { goHome } from '../navigation/navigationService';
 import styles from '../style/HomeStyles';
 
-const Header = ({ onMenuPress,onNavigate }) => {
+const Header = ({ onMenuPress }) => {
   return (
     <View edges={['top']} >
       <StatusBar barStyle="light-content" backgroundColor="#004a99" />
@@ -12,7 +13,7 @@ const Header = ({ onMenuPress,onNavigate }) => {
         <View style={styles.headerTop}>
           <View style={styles.logoContainer}>
             <TouchableOpacity 
-              onPress={() => onNavigate('HOME')} 
+              onPress={() => goHome()} 
               activeOpacity={0.7}
               style={styles.logoPlaceholder}
             >

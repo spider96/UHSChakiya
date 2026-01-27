@@ -1,0 +1,49 @@
+import React, { useContext, useState } from 'react';
+import { View, Alert } from 'react-native';
+import { AuthContext } from '../auth/AuthContext';
+import { USER_ROLES } from '../constants/roles';
+import Header from '../screens/Header';
+import SideMenu from '../components/SideMenu';
+import MainNavigator from './MainNavigator';
+import HomeStyles from '../style/HomeStyles';
+
+export default function MainNavigatorWithLayout({ navigationRef }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext);
+
+  const handleLogout = async () => {
+    setIsMenuOpen(false);
+    try {
+      await logout();
+      Alert.alert("Session Ended", "Logged out successfully");
+    } catch (error) {
+      console.log("Logout Error", error);
+    }
+  };
+
+  // No handleMenuNavigation needed - using global navigation service instead
+  // This prevents any conflicts or double navigation calls
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Header */}
+      <Header 
+        onMenuPress={() => setIsMenuOpen(true)}
+      />
+
+      {/* Main Content */}
+      <View style={HomeStyles.contentArea}>
+        <MainNavigator />
+      </View>
+
+      {/* Side Menu */}
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onLogout={handleLogout}
+        userRole={user?.role ?? USER_ROLES.GUEST}
+        userName={user?.name ?? "Guest User"}
+      />
+    </View>
+  );
+}

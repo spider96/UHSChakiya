@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { AuthContext } from '../auth/AuthContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { navigate, goHome } from '../navigation/navigationService';
 
 import {
   StyleSheet,
@@ -19,7 +20,7 @@ import { X, Users, BookOpen, GraduationCap, LogOut, User } from 'lucide-react-na
 const { width, height } = Dimensions.get('window');
 const MENU_WIDTH = width * 0.75;
 
-const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName }) => {
+const SideMenu = ({ isOpen, onClose, onLogout, userRole, userName }) => {
   const slideAnim = useRef(new Animated.Value(MENU_WIDTH)).current;
   const insets = useSafeAreaInsets();
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -111,20 +112,40 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
             <MenuLink
               icon={<Users color="#004a99" size={22} />}
               label="Login"
-              onPress={() => onNavigate('LOGIN')}
+              onPress={() => {
+                console.log('📌 Menu: Login clicked');
+                onClose();
+                navigate('LOGIN');
+              }}
             />
           ) : (
             <>
-              <MenuLink icon={<User color="#004a99" size={22} />} label="Profile" onPress={() => onNavigate('PROFILE')} />
-              <MenuLink icon={<BookOpen color="#004a99" size={22} />} label="Academic Report" onPress={() => onNavigate('ACADEMIC_REPORT')} />
+              <MenuLink icon={<User color="#004a99" size={22} />} label="Profile" onPress={() => {
+                console.log('📌 Menu: Profile clicked');
+                onClose();
+                navigate('PROFILE');
+              }} />
+              <MenuLink icon={<BookOpen color="#004a99" size={22} />} label="Academic Report" onPress={() => {
+                console.log('📌 Menu: Academic Report clicked');
+                onClose();
+                navigate('ACADEMIC_REPORT');
+              }} />
 
               <View style={styles.divider} />
 
               <Text style={styles.sectionLabel}>Management</Text>
-              <MenuLink icon={<GraduationCap color="#004a99" size={22} />} label="Student Dashboard" onPress={() => onNavigate('STUDENTS')} />
+              <MenuLink icon={<GraduationCap color="#004a99" size={22} />} label="Student Dashboard" onPress={() => {
+                console.log('📌 Menu: Student Dashboard clicked');
+                onClose();
+                navigate('STUDENTS');
+              }} />
 
               {userRole === 'ROLE_ADMIN' && (
-                <MenuLink icon={<Users color="#004a99" size={22} />} label="Teacher Dashboard" onPress={() => onNavigate('TEACHERS')} />
+                <MenuLink icon={<Users color="#004a99" size={22} />} label="Teacher Dashboard" onPress={() => {
+                  console.log('📌 Menu: Teacher Dashboard clicked');
+                  onClose();
+                  navigate('TEACHERS');
+                }} />
               )}
 
               <View style={styles.divider} />
@@ -132,6 +153,7 @@ const SideMenu = ({ isOpen, onClose, onNavigate, onLogout, userRole, userName })
               <TouchableOpacity
                 style={styles.linkItem}
                 onPress={() => {
+                  console.log('📌 Menu: Logout clicked');
                   onClose();
                   setTimeout(onLogout, 400);
                 }}

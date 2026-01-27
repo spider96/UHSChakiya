@@ -20,7 +20,7 @@ import {
 } from '../services/attendanceService';
 import AttendanceStyles from '../style/AttendanceStyles';
 
-export default function ViewAttendanceScreen({ onNavigate }) {
+export default function ViewAttendanceScreen({ navigation }) {
   const [filterType, setFilterType] = useState('class'); // class, student, date-range
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -299,7 +299,7 @@ export default function ViewAttendanceScreen({ onNavigate }) {
 
           <TouchableOpacity
             style={[AttendanceStyles.button, AttendanceStyles.cancelButton, { margin: 16 }]}
-            onPress={() => onNavigate('HOME')}
+            onPress={() => navigation.pop()}
           >
             <Text style={AttendanceStyles.cancelButtonText}>Back</Text>
           </TouchableOpacity>

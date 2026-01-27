@@ -5,7 +5,8 @@ import SubHeader from '../components/SubHeader';
 import ActionCard from '../components/ActionCard';
 import styles from '../style/AcademicReportDashboardStyles';
 
-export default function AcademicReportDashboard({ onNavigate }) {
+export default function AcademicReportDashboard({ navigation }) {
+
   return (
     <ScrollView style={styles.mainContainer}>
       <SubHeader title="Academic Report" />
@@ -17,7 +18,7 @@ export default function AcademicReportDashboard({ onNavigate }) {
           title="Notice Management" 
           icon={FileText} 
           color="#3B82F6" // Blue
-          onPress={() => onNavigate('NOTICES', { source: 'academic' })}
+          onPress={() => navigation.navigate('NOTICES_FROM_ACADEMIC')}
         />
         
         {/* Attendance Management */}
@@ -25,7 +26,7 @@ export default function AcademicReportDashboard({ onNavigate }) {
           title="Attendance" 
           icon={ClipboardList} 
           color="#10B981" // Emerald
-          onPress={() => onNavigate('ATTENDANCE')}
+          onPress={() => navigation.navigate('ATTENDANCE_FROM_ACADEMIC')}
         />
 
         {/* Student Performance */}

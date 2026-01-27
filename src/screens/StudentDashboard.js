@@ -6,7 +6,7 @@ import ActionCard from '../components/ActionCard';
 import styles from '../style/StudentDashboardStyles';
 
 
-export default function StudentDashboard({ onNavigate }) { 
+export default function StudentDashboard({ navigation }) {
 
   return (
     <ScrollView style={styles.mainContainer}>
@@ -14,18 +14,18 @@ export default function StudentDashboard({ onNavigate }) {
       <SubHeader title="Student Dashboard" />
 
       {/* Grid Container */}
-      <View style={styles.grid}>
+            <View style={styles.grid}>
         <ActionCard 
           title="Add Student" 
           icon={Plus} 
           color="#4F46E5" // Indigo
-          onPress={() => onNavigate('ADD_STUDENT')}
+          onPress={() => navigation.navigate('ADD_STUDENT')}
         />
         <ActionCard 
           title="View All" 
           icon={Users} 
           color="#10B981" // Emerald
-          onPress={() => onNavigate('STUDENT_LIST')}
+          onPress={() => navigation.navigate('StudentList')}
         />
         <ActionCard 
           title="Attendance" 

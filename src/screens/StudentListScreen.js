@@ -16,7 +16,7 @@ import { getImage } from '../services/MediaService';
 //const [loading, setLoading] = useState(false);
 
 
-export default function StudentListScreen({ onNavigate }) {
+export default function StudentListScreen({ navigation }) {
   const [filterClass, setFilterClass] = useState('');
   const [searchName, setSearchName] = useState('');
   const [students, setStudents] = useState([]);

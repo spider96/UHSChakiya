@@ -13,7 +13,7 @@ import SubHeader from '../components/SubHeader';
 import AddTeacherStyles from '../style/AddTeacherStyles';
 import { addTeacher } from '../services/teacherService';
 
-export default function AddTeacherScreen({ onNavigate }) {
+export default function AddTeacherScreen({ navigation }) {
   const [teacher, setTeacher] = useState({
     username: '',
     teacherName: '',
@@ -97,7 +97,7 @@ export default function AddTeacherScreen({ onNavigate }) {
       // await addTeacher(teacher);
       console.log('Teacher data:', teacher);
       Alert.alert('Success', 'Teacher added successfully!');
-      onNavigate('TEACHERS');
+      navigation.pop();
     } catch (error) {
       console.error('Error adding teacher:', error);
       setErrors({ submit: 'Failed to add teacher. Please try again.' });
@@ -108,7 +108,7 @@ export default function AddTeacherScreen({ onNavigate }) {
   };
 
   const handleCancel = () => {
-    onNavigate('TEACHERS');
+    navigation.pop();
   };
 
   return (

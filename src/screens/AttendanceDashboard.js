@@ -5,7 +5,8 @@ import SubHeader from '../components/SubHeader';
 import ActionCard from '../components/ActionCard';
 import HomeStyles from '../style/HomeStyles';
 
-export default function AttendanceDashboard({ onNavigate }) {
+export default function AttendanceDashboard({ navigation }) {
+
   return (
     <ScrollView style={styles.mainContainer}>
       <SubHeader title="Attendance Management" />
@@ -17,7 +18,7 @@ export default function AttendanceDashboard({ onNavigate }) {
           title="Mark Attendance" 
           icon={ClipboardList} 
           color="#3B82F6"
-          onPress={() => onNavigate('MARK_ATTENDANCE')}
+          onPress={() => navigation.navigate('MARK_ATTENDANCE')}
         />
         
         {/* View Attendance */}
@@ -25,7 +26,7 @@ export default function AttendanceDashboard({ onNavigate }) {
           title="View Attendance" 
           icon={Eye} 
           color="#10B981"
-          onPress={() => onNavigate('VIEW_ATTENDANCE')}
+          onPress={() => navigation.navigate('VIEW_ATTENDANCE')}
         />
 
         {/* Attendance Statistics */}
@@ -33,7 +34,7 @@ export default function AttendanceDashboard({ onNavigate }) {
           title="Attendance Statistics" 
           icon={BarChart3} 
           color="#F59E0B"
-          onPress={() => onNavigate('ATTENDANCE_STATS')}
+          onPress={() => navigation.navigate('ATTENDANCE_STATS')}
         />
 
         {/* Back */}
@@ -41,7 +42,7 @@ export default function AttendanceDashboard({ onNavigate }) {
           title="Back" 
           icon={Home} 
           color="#6B7280"
-          onPress={() => onNavigate('HOME')}
+          onPress={() => navigation.getParent().navigate('HOME')}
         />
       </View>
     </ScrollView>

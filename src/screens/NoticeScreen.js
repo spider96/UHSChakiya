@@ -222,7 +222,7 @@ const NoticeCard = memo(({ item, onEdit, onDelete, showActions }) => {
 });
 
 /* ---------- Screen ---------- */
-const NoticeBoardScreen = ({ onNavigate, source }) => {
+const NoticeBoardScreen = ({ navigation, source }) => {
     const [notices, setNotices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -268,7 +268,7 @@ const NoticeBoardScreen = ({ onNavigate, source }) => {
 
     /* ---------- Handle Edit ---------- */
     const handleEdit = (noticeId) => {
-        onNavigate && onNavigate('EDIT_NOTICE', { noticeId, allNotices: notices, source });
+        navigation && navigation.navigate('EDIT_NOTICE', { noticeId, allNotices: notices });
     };
 
     /* ---------- Handle Delete ---------- */
@@ -317,7 +317,7 @@ const NoticeBoardScreen = ({ onNavigate, source }) => {
             {showActions && (
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => onNavigate && onNavigate('ADD_NOTICE', { source })}
+                    onPress={() => navigation && navigation.navigate('ADD_NOTICE')}
                 >
                     <Icon name="add" size={24} color="white" />
                     <Text style={styles.addButtonText}>Add Notice</Text>

@@ -19,7 +19,7 @@ import { getImage } from '../services/MediaService';
 import UpdateTeacherStyles from '../style/UpdateTeacherStyles';
 import { handleImageUpload } from '../utils/utils';
 
-export default function UpdateTeacherScreen({ onNavigate }) {
+export default function UpdateTeacherScreen({ navigation }) {
   const [searchUserId, setSearchUserId] = useState('');
   const [teacher, setTeacher] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -192,7 +192,7 @@ export default function UpdateTeacherScreen({ onNavigate }) {
 
       await updateTeacher(teacher.id, updatePayload);
       Alert.alert('Success', 'Teacher profile updated successfully!');
-      onNavigate('TEACHERS');
+      navigation.pop();
     } catch (error) {
       console.error('Error updating teacher:', error);
       Alert.alert('Error', 'Failed to update teacher profile. Please try again.');
@@ -202,7 +202,7 @@ export default function UpdateTeacherScreen({ onNavigate }) {
   };
 
   const handleCancel = () => {
-    onNavigate('TEACHERS');
+    navigation.pop();
   };
 
   return (

@@ -101,7 +101,7 @@ const ImageSlideshow = () => {
   );
 };
 
-const HomeContent = ({onNavigate}) => {
+const HomeContent = ({ navigation }) => {
   return (
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
         
@@ -117,7 +117,7 @@ const HomeContent = ({onNavigate}) => {
               <Megaphone color="white" size={18} />
               <Text style={styles.noticeTitle}>Notice Board</Text>
             </View>
-            <TouchableOpacity style={styles.viewAllBtnHeader} onPress={() => onNavigate('NOTICES', { source: 'home' })}>
+            <TouchableOpacity style={styles.viewAllBtnHeader} onPress={() => navigation && navigation.navigate('NOTICES')}>
               <Text style={styles.viewAllTextHeader}>View All</Text>
               <ChevronRight color="#0056b3" size={14} />
             </TouchableOpacity>

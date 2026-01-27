@@ -43,7 +43,7 @@ const NOTICE_DATA = [
     },
 ];
 
-export default function AddNoticeScreen({ onNavigate, noticeId, editMode = false, allNotices = [], source = 'academic' }) {
+export default function AddNoticeScreen({ navigation, noticeId, editMode = false, allNotices = [] }) {
   const [title, setTitle] = useState('');
   const [short, setShort] = useState('');
   const [full, setFull] = useState('');
@@ -125,7 +125,7 @@ export default function AddNoticeScreen({ onNavigate, noticeId, editMode = false
       setShort('');
       setFull('');
       setTimeout(() => {
-        onNavigate && onNavigate('NOTICES');
+        navigation && navigation.pop();
       }, 500);
     } catch (error) {
       Alert.alert('Error', editMode ? 'Failed to update notice' : 'Failed to create notice');
@@ -150,8 +150,8 @@ export default function AddNoticeScreen({ onNavigate, noticeId, editMode = false
     setTitle('');
     setShort('');
     setFull('');
-    if (onNavigate) {
-      onNavigate('NOTICES', { source });
+    if (navigation) {
+      navigation.pop();
     }
   };
 

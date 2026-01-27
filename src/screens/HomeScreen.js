@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import styles from '../style/HomeStyles';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
 
 // Context
 import { AuthContext, AuthProvider } from '../auth/AuthContext';
@@ -24,6 +25,8 @@ import AttendanceDashboard from '../screens/AttendanceDashboard';
 import MarkAttendanceScreen from '../screens/MarkAttendanceScreen';
 import ViewAttendanceScreen from '../screens/ViewAttendanceScreen';
 import AttendanceStatsScreen from '../screens/AttendanceStatsScreen';
+import StudentStackNavigator from '../navigation/StudentStackNavigator';
+import MainNavigator from '../navigation/MainNavigator';
 import SideMenu from '../components/SideMenu';
 
 import { USER_ROLES } from '../constants/roles';
@@ -33,6 +36,7 @@ function AppContent(navigation) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeScreen, setActiveScreen] = useState('HOME');
   const [navigationParams, setNavigationParams] = useState({});
+  const navigationRef = React.useRef();
 
   useEffect(() => {
     if (!user && activeScreen !== 'HOME' && activeScreen !== 'LOGIN') {
@@ -57,10 +61,11 @@ function AppContent(navigation) {
     // 1. Start closing the menu
     setIsMenuOpen(false);
     // 2. Store any navigation params
-    if (params) {
-      setNavigationParams(params);
-    }
+    // if (params) {
+    //   setNavigationParams(params);
+    // }
     // 3. Switch screen immediately without delay
+     navigationRef.current?.navigate(screen);
     setActiveScreen(screen);
   };
 
@@ -77,7 +82,8 @@ function AppContent(navigation) {
       case 'TEACHERS': return <TeacherDashboard onNavigate={handleNavigation} />;
       case 'ADD_TEACHER': return <AddTeacherScreen onNavigate={handleNavigation} />;
       case 'UPDATE_TEACHER': return <UpdateTeacherScreen onNavigate={handleNavigation} />;
-      case 'STUDENTS': return <StudentDashboard onNavigate={handleNavigation} />;
+      // case 'STUDENTS': return <StudentDashboard onNavigate={handleNavigation} />;
+      case 'STUDENTS': return <StudentStackNavigator onNavigate={handleNavigation} />;
       case 'ADD_STUDENT': return <AddStudentScreen onNavigate={handleNavigation} />;
       case 'STUDENT_LIST': return <StudentListScreen onNavigate={handleNavigation} />;
       case 'NOTICES': return <NoticeScreen onNavigate={handleNavigation} source={navigationParams?.source} />;
@@ -95,26 +101,27 @@ function AppContent(navigation) {
 
   return (
     <SafeAreaProvider style={styles.headerSafeArea}>
-
-      <SafeAreaView style={{ flex: 1 }} >
-        <View style={styles.mainContainer}>
-          <Header onMenuPress={() => setIsMenuOpen(true)} onNavigate={handleNavigation} />
-          <View style={styles.contentArea}>
+      <NavigationContainer ref={navigationRef}>
+        <SafeAreaView style={{ flex: 1 }} >
+          <View style={styles.mainContainer}>
+            <Header onMenuPress={() => setIsMenuOpen(true)} onNavigate={handleNavigation} />
+            <View style={styles.contentArea}>
             {renderActiveScreen()}
+            {/* <MainNavigator /> */}
+            </View>
           </View>
-        </View>
 
-        {/* SideMenu is now OUTSIDE the main container as an overlay */}
-        <SideMenu
-          isOpen={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-          onNavigate={handleNavigation}
-          onLogout={handleLogout}
-          userRole={user?.role ?? USER_ROLES.GUEST}
-          userName={user?.name ?? "Guest User"}
-        />
-      </SafeAreaView>
-
+          {/* SideMenu is now OUTSIDE the main container as an overlay */}
+          <SideMenu
+            isOpen={isMenuOpen}
+            onClose={() => setIsMenuOpen(false)}
+            onNavigate={handleNavigation}
+            onLogout={handleLogout}
+            userRole={user?.role ?? USER_ROLES.GUEST}
+            userName={user?.name ?? "Guest User"}
+          />
+        </SafeAreaView>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }

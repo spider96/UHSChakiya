@@ -1,14 +1,12 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import StudentListScreen from '../screens/StudentListScreen';
-import AddStudentScreen from '../screens/AddStudentScreen';
-import StudentDetailScreen from '../screens/StudentDetailScreen';
-import StudentDashboard from '../screens/StudentDashboard';
+import NoticeScreen from '../screens/NoticeScreen';
+import AddNoticeScreen from '../screens/AddNoticeScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function StudentStackNavigator({ navigation }) {
+export default function NoticeStackNavigator({ navigation }) {
   const handleBeforeRemove = (e) => {
     // Only intercept GO_BACK when we're at the root screen
     if (e.data.action.type === 'GO_BACK') {
@@ -31,33 +29,27 @@ export default function StudentStackNavigator({ navigation }) {
 
   return (
     <Stack.Navigator
-      initialRouteName="StudentDashboardScreen"
+      initialRouteName="NoticeListScreen"
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: 'white' },
         gestureEnabled: true,
-        gestureResponseDistance: 200,
+        cardStyle: { backgroundColor: 'white' }
       }}
     >
       <Stack.Screen
-        name="StudentDashboardScreen"
-        component={StudentDashboard}
-        options={{ title: 'Students' }}
+        name="NoticeListScreen"
+        component={NoticeScreen}
+        options={{ title: 'Notices' }}
       />
       <Stack.Screen
-        name="StudentList"
-        component={StudentListScreen}
-        options={{ title: 'Students' }}
+        name="ADD_NOTICE"
+        component={AddNoticeScreen}
+        options={{ title: 'Add Notice' }}
       />
       <Stack.Screen
-        name="ADD_STUDENT"
-        component={AddStudentScreen}
-        options={{ title: 'Add Student' }}
-      />
-      <Stack.Screen
-        name="StudentDetail"
-        component={StudentDetailScreen}
-        options={{ title: 'Student Details' }}
+        name="EDIT_NOTICE"
+        component={AddNoticeScreen}
+        options={{ title: 'Edit Notice' }}
       />
     </Stack.Navigator>
   );
