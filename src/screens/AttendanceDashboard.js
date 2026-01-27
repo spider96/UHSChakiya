@@ -4,6 +4,7 @@ import { ClipboardList, Eye, BarChart3, Home } from 'lucide-react-native';
 import SubHeader from '../components/SubHeader';
 import ActionCard from '../components/ActionCard';
 import HomeStyles from '../style/HomeStyles';
+import { goHome } from '../navigation/navigationService';
 
 export default function AttendanceDashboard({ navigation }) {
 
@@ -42,7 +43,7 @@ export default function AttendanceDashboard({ navigation }) {
           title="Back" 
           icon={Home} 
           color="#6B7280"
-          onPress={() => navigation.getParent().navigate('HOME')}
+          onPress={goHome}
         />
       </View>
     </ScrollView>

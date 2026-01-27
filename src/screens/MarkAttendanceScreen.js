@@ -15,6 +15,7 @@ import { Calendar } from 'lucide-react-native';
 import SubHeader from '../components/SubHeader';
 import { getClasses, getStudentsByClass, markAttendance } from '../services/attendanceService';
 import AttendanceStyles from '../style/AttendanceStyles';
+import { goHome } from '../navigation/navigationService';
 
 export default function MarkAttendanceScreen({ navigation }) {
   const [selectedClass, setSelectedClass] = useState(null);
@@ -131,7 +132,7 @@ export default function MarkAttendanceScreen({ navigation }) {
       Alert.alert('Success', 'Attendance marked successfully!', [
         {
           text: 'OK',
-          onPress: () => navigation.getParent().navigate('HOME'),
+          onPress: goHome,
         },
       ]);
     } catch (error) {

@@ -74,7 +74,7 @@ export default function AcademicReportDashboard({ navigation }) {
           title="Student List" 
           icon={Users} 
           color="#6366F1" // Indigo
-          onPress={() => onNavigate('STUDENT_LIST')}
+          onPress={() => navigation.navigate('STUDENTS', { screen: 'StudentList' })}
         />
       </View>
     </ScrollView>

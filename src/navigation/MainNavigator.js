@@ -17,7 +17,7 @@ export default function MainNavigator() {
       screenOptions={{
         headerShown: false,
         animationEnabled: false,
-        cardStyle: { backgroundColor: 'white' }
+        contentStyle: { backgroundColor: 'white' }
       }}
     >
       {/* Home is the root screen - entry point */}
