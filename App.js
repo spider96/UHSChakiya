@@ -7,8 +7,8 @@ import HomeScreen from './src/screens/HomeScreen';
 export default function App() {
   return (
     <AuthProvider>
-       <PaperProvider>
-      <HomeScreen />
+      <PaperProvider>
+        <HomeScreen />
       </PaperProvider>
     </AuthProvider>
   );

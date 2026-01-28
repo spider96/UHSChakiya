@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, TouchableOpacity ,Image} from 'react-native';
-import { Megaphone, Info, BookOpen, Users, ImageIcon,ChevronRight } from 'lucide-react-native';
+import React, { useState, useEffect, use } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, Image } from 'react-native';
+import { Megaphone, Info, BookOpen, Users, ImageIcon, ChevronRight } from 'lucide-react-native';
 import styles from '../style/HomeStyles';
-
+//import useBackHandler from '../hooks/useBackHandler';
 
 
 // --- UI SUB-COMPONENTS ---
@@ -34,7 +34,7 @@ const ImageSlideshow = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [imageLoadError, setImageLoadError] = useState(false);
-  
+
   // Array of banner images - add more images as needed
   const bannerImages = [
     require('../assets/banner.jpg'),
@@ -77,8 +77,8 @@ const ImageSlideshow = () => {
         </View>
       )}
       {!imageLoadError && (
-        <Image 
-          source={bannerImages[currentImageIndex]} 
+        <Image
+          source={bannerImages[currentImageIndex]}
           style={styles.heroImage}
           onLoad={handleImageLoad}
           onError={handleImageError}
@@ -101,87 +101,89 @@ const ImageSlideshow = () => {
   );
 };
 
-const HomeContent = ({onNavigate}) => {
+const HomeContent = ({ onNavigate }) => {
+ // useBackHandler();
+
   return (
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
-        
-        {/* 1. Hero Banner Slideshow */}
-        <View style={styles.heroContainer}>
-          <ImageSlideshow />
-        </View>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
 
-        {/* 2. Notice Board */}
-        <View style={styles.card}>
-          <View style={styles.noticeHeader}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Megaphone color="white" size={18} />
-              <Text style={styles.noticeTitle}>Notice Board</Text>
-            </View>
-            <TouchableOpacity style={styles.viewAllBtnHeader} onPress={() => onNavigate('NOTICES', { source: 'home' })}>
-              <Text style={styles.viewAllTextHeader}>View All</Text>
-              <ChevronRight color="#0056b3" size={14} />
-            </TouchableOpacity>
+      {/* 1. Hero Banner Slideshow */}
+      <View style={styles.heroContainer}>
+        <ImageSlideshow />
+      </View>
+
+      {/* 2. Notice Board */}
+      <View style={styles.card}>
+        <View style={styles.noticeHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Megaphone color="white" size={18} />
+            <Text style={styles.noticeTitle}>Notice Board</Text>
           </View>
-          <View style={styles.noticeList}>
-            <NoticeItem text="Class 12 Exam Form Submission 12 Sep 2021" />
-            <NoticeItem text="Holiday Notice: Durga Puja 18 Oct 2021" />
-            <TouchableOpacity style={styles.viewAllInline}>
-              <Text style={styles.viewAllInlineText}>View All</Text>
-              <ChevronRight color="#0056b3" size={14} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* 3. Quick Links Grid */}
-        <View style={styles.gridContainer}>
-          <GridItem icon={<Info color="#0056b3" size={30} />} label="About Us" />
-          <GridItem icon={<BookOpen color="#0056b3" size={30} />} label="Courses" />
-          <GridItem icon={<Users color="#0056b3" size={30} />} label="Faculty" />
-          <GridItem icon={<ImageIcon color="#0056b3" size={30} />} label="Gallery" />
-        </View>
-
-        {/* 4. About Us Section */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitleMain}>About Us</Text>
-          <View style={styles.titleUnderline} />
-          <Text style={styles.sectionPara}>
-            UCHCH MADHYAMIK VIDYALAYA CHAKIYA is a reputed government institution committed to excellence.
-          </Text>
-          <TouchableOpacity style={styles.readMore}>
-            <Text style={styles.readMoreText}>Read More</Text>
+          <TouchableOpacity style={styles.viewAllBtnHeader} onPress={() => onNavigate('NOTICES', { source: 'home' })}>
+            <Text style={styles.viewAllTextHeader}>View All</Text>
             <ChevronRight color="#0056b3" size={14} />
           </TouchableOpacity>
         </View>
+        <View style={styles.noticeList}>
+          <NoticeItem text="Class 12 Exam Form Submission 12 Sep 2021" />
+          <NoticeItem text="Holiday Notice: Durga Puja 18 Oct 2021" />
+          <TouchableOpacity style={styles.viewAllInline}>
+            <Text style={styles.viewAllInlineText}>View All</Text>
+            <ChevronRight color="#0056b3" size={14} />
+          </TouchableOpacity>
+        </View>
+      </View>
 
-        {/* 4.1 Courses Offered Section */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitleMain}>Courses Offered</Text>
-          <View style={styles.titleUnderline} />
-          <View style={styles.coursesList}>
-            <View style={styles.courseItem}>
-              <Text style={styles.courseBullet}>•</Text>
-              <Text style={styles.courseText}>Class 09-10 (Matric Board)</Text>
-            </View>
-            <View style={styles.courseItem}>
-              <Text style={styles.courseBullet}>•</Text>
-              <Text style={styles.courseText}>Class 11-12 (Science & Arts)</Text>
-            </View>
+      {/* 3. Quick Links Grid */}
+      <View style={styles.gridContainer}>
+        <GridItem icon={<Info color="#0056b3" size={30} />} label="About Us" />
+        <GridItem icon={<BookOpen color="#0056b3" size={30} />} label="Courses" />
+        <GridItem icon={<Users color="#0056b3" size={30} />} label="Faculty" />
+        <GridItem icon={<ImageIcon color="#0056b3" size={30} />} label="Gallery" />
+      </View>
+
+      {/* 4. About Us Section */}
+      <View style={styles.sectionCard}>
+        <Text style={styles.sectionTitleMain}>About Us</Text>
+        <View style={styles.titleUnderline} />
+        <Text style={styles.sectionPara}>
+          UCHCH MADHYAMIK VIDYALAYA CHAKIYA is a reputed government institution committed to excellence.
+        </Text>
+        <TouchableOpacity style={styles.readMore}>
+          <Text style={styles.readMoreText}>Read More</Text>
+          <ChevronRight color="#0056b3" size={14} />
+        </TouchableOpacity>
+      </View>
+
+      {/* 4.1 Courses Offered Section */}
+      <View style={styles.sectionCard}>
+        <Text style={styles.sectionTitleMain}>Courses Offered</Text>
+        <View style={styles.titleUnderline} />
+        <View style={styles.coursesList}>
+          <View style={styles.courseItem}>
+            <Text style={styles.courseBullet}>•</Text>
+            <Text style={styles.courseText}>Class 09-10 (Matric Board)</Text>
+          </View>
+          <View style={styles.courseItem}>
+            <Text style={styles.courseBullet}>•</Text>
+            <Text style={styles.courseText}>Class 11-12 (Science & Arts)</Text>
           </View>
         </View>
+      </View>
 
-        {/* 5. Our Faculty Section */}
-        <View style={styles.facultyHeader}>
-          <Text style={styles.sectionTitleMain}>Our Faculty</Text>
-        </View>
-        
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.facultyScroll}>
-          <FacultyCard name="Saurabh Kumar" role="Math | 15 Years" />
-          <FacultyCard name="Mrs. S. Verma" role="Maths | 12 Years" />
-          <FacultyCard name="Mr. R.K. Singh" role="English | 10 Years" />
-        </ScrollView>
+      {/* 5. Our Faculty Section */}
+      <View style={styles.facultyHeader}>
+        <Text style={styles.sectionTitleMain}>Our Faculty</Text>
+      </View>
 
-        <View style={{height: 40}} />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.facultyScroll}>
+        <FacultyCard name="Saurabh Kumar" role="Math | 15 Years" />
+        <FacultyCard name="Mrs. S. Verma" role="Maths | 12 Years" />
+        <FacultyCard name="Mr. R.K. Singh" role="English | 10 Years" />
       </ScrollView>
+
+      <View style={{ height: 40 }} />
+    </ScrollView>
   );
 };
 
