@@ -1,88 +1,85 @@
-// Global navigation service to handle navigation from anywhere in the app
-let navigationRef = null;
-let navigationReady = false;
+// navigationService.js
+import { CommonActions, StackActions } from '@react-navigation/native';
 
+let _navigator = null;
+let _retryTimeout = null;
+
+/**
+ * Sets the active navigation reference.
+ * Called by NavigationContainer's ref and onReady.
+ */
 export const setNavigationRef = (ref) => {
-  console.log('🚀 Setting navigation ref...');
-  navigationRef = ref;
-  navigationReady = true;
-  console.log('🚀 Navigation ref set globally - READY', ref?.current ? '✅' : '❌');
+  if (ref && ref.current) {
+    _navigator = ref;
+    console.log('✅ Navigation Service: Ref Synchronized');
+  }
 };
 
+/**
+ * Completely clears the reference. 
+ * Use this in useEffect cleanup of App.js
+ */
 export const resetNavigationService = () => {
-  console.log('🔄 Resetting navigation service');
-  navigationRef = null;
-  navigationReady = false;
+  console.log('🔄 Navigation Service: Resetting');
+  if (_retryTimeout) clearTimeout(_retryTimeout);
+  _navigator = null;
 };
 
-export const isNavigationReady = () => {
-  const ready = navigationReady && navigationRef?.current;
-  console.log('⏳ Is navigation ready?', ready);
-  return ready;
-};
-
-const getCurrentRoute = () => {
-  const state = navigationRef?.current?.getRootState();
-  if (!state) return null;
-  
-  let route = state.routes[state.index];
-  
-  while (route.state) {
-    route = route.state.routes[route.state.index];
-  }
-  
-  return route?.name;
-};
-
+/**
+ * Navigate to a specific route
+ */
 export const navigate = (name, params) => {
-  console.log('📍 Navigate called:', name);
-  console.log('🔍 navigationRef:', navigationRef ? '✅ exists' : '❌ null');
-  console.log('🔍 navigationRef.current:', navigationRef?.current ? '✅ exists' : '❌ null');
-  
-  if (!navigationRef?.current) {
-    console.warn('❌ Navigation ref is null, retrying in 300ms...');
-    setTimeout(() => navigate(name, params), 300);
-    return;
-  }
-
-  try {
-    const currentRoute = getCurrentRoute();
-    console.log('➡️ Current route:', currentRoute, '-> Target route:', name);
+  // Check if the navigator exists AND if the internal state is ready
+  if (_navigator?.current && typeof _navigator.current.isReady === 'function' && _navigator.current.isReady()) {
     
-    // If we're already at the target route, don't navigate
+    // Safety: Check current route to avoid double navigation
+    const state = _navigator.current.getRootState();
+    const currentRoute = getActiveRouteName(state);
+    
     if (currentRoute === name) {
-      console.log('✅ Already at', name);
+      console.log(`ℹ️ Already on ${name}, skipping.`);
       return;
     }
-    
-    navigationRef.current.navigate(name, params);
-    console.log('✅ Navigated to:', name);
-  } catch (error) {
-    console.error('❌ Navigation error:', error);
-    console.error('❌ Error message:', error.message);
-    setTimeout(() => navigate(name, params), 300);
+
+    _navigator.current.navigate(name, params);
+    console.log(`🚀 Navigated to: ${name}`);
+  } else {
+    console.warn(`⏳ Navigation not ready for ${name}. Retrying...`);
+    if (_retryTimeout) clearTimeout(_retryTimeout);
+    _retryTimeout = setTimeout(() => navigate(name, params), 200);
   }
 };
 
-export const goHome = () => {
-  console.log('🏠 Going home');
-  navigate('HOME');
+/**
+ * Helper to find the current active route name in the state tree
+ */
+const getActiveRouteName = (state) => {
+  if (!state || !state.routes) return null;
+  const route = state.routes[state.index];
+  if (route.state) {
+    return getActiveRouteName(route.state);
+  }
+  return route.name;
 };
+
+export const goHome = () => navigate('HOME');
 
 export const goBack = () => {
-  console.log('⬅️ Going back');
-  if (!navigationRef?.current) {
-    console.warn('❌ Navigation ref is null');
-    return;
+  if (_navigator?.current?.canGoBack()) {
+    _navigator.current.goBack();
+  } else {
+    console.log('⬅️ Back action ignored: At stack root');
   }
+};
 
-  try {
-    if (navigationRef.current.canGoBack()) {
-      navigationRef.current.goBack();
-    } else {
-      console.log('⬅️ Cannot go back, at root');
-    }
-  } catch (error) {
-    console.error('❌ Go back error:', error);
+// Bonus: Reset the stack (Useful for Logout)
+export const resetToLogin = () => {
+  if (_navigator?.current) {
+    _navigator.current.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'LOGIN' }],
+      })
+    );
   }
 };

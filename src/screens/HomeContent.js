@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, TouchableOpacity ,Image} from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Image } from 'react-native';
 import { Megaphone, Info, BookOpen, Users, ImageIcon,ChevronRight } from 'lucide-react-native';
 import styles from '../style/HomeStyles';
+import { useExitOnBack } from '../hooks/useBackHandler';
 
 
 
@@ -102,6 +103,10 @@ const ImageSlideshow = () => {
 };
 
 const HomeContent = ({ navigation }) => {
+  // This hook correctly handles the back press on the home screen,
+  // showing an exit confirmation dialog. It is only active on this screen.
+  useExitOnBack();
+
   return (
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
         

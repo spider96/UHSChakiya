@@ -1,15 +1,14 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { getUser, saveUser, removeUser } from '../utils/storage';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { Alert } from 'react-native';
+import { getUser, saveUser, removeUser } from '../utils/storage';
 
 export const AuthContext = createContext();
 
 /**
  * GLOBAL LOGOUT BRIDGE
- * This allows non-component files (like your API client) to 
- * trigger the logout logic inside this provider.
+ * Allows API layer to force logout
  */
-let logoutRef;
+let logoutRef = null;
 
 export const globalLogout = async (reason) => {
   if (logoutRef) {
@@ -21,12 +20,20 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 🔹 Restore session ONCE
   useEffect(() => {
-    // Load user from AsyncStorage on app start
-    getUser().then(savedUser => {
-      setUser(savedUser);
-      setLoading(false);
-    });
+    const restoreUser = async () => {
+      try {
+        const savedUser = await getUser();
+        setUser(savedUser);
+      } catch (err) {
+        console.error('Failed to restore user:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    restoreUser();
   }, []);
 
   const login = async (userData) => {
@@ -34,35 +41,47 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
-  const logout = async (reason = null) => {
+  const logout = useCallback(async (reason = null) => {
     try {
-      // Check if reason exists AND is 'EXPIRED'
-      if (reason && reason === 'EXPIRED') {
+      if (reason === 'EXPIRED') {
         Alert.alert(
-          "Session Expired",
-          "Your session has timed out. Please login again.",
-          [{ text: "OK" }]
+          'Session Expired',
+          'Your session has timed out. Please login again.',
+          [{ text: 'OK' }]
         );
       }
+
       await removeUser();
       setUser(null);
 
     } catch (error) {
-      console.error("Logout process error:", error);
+      console.error('Logout process error:', error);
     }
+  }, []);
 
-  };
+  // 🔹 Register logout bridge SAFELY
+  useEffect(() => {
+    logoutRef = logout;
+    return () => {
+      logoutRef = null;
+    };
+  }, [logout]);
 
-  logoutRef = logout;
+  // 🚨 CRITICAL FIX: DO NOT RENDER APP UNTIL AUTH IS READY
+  if (loading) {
+    return null; // or <SplashScreen />
+  }
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      login,
-      logout,
-      loading,
-      isLoggedIn: !!user 
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        loading,
+        isLoggedIn: !!user,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

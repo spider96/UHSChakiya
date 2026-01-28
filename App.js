@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AuthProvider } from './src/auth/AuthContext';
+import { AuthContext, AuthProvider } from './src/auth/AuthContext';
 import AppNavigator from './src/navigation/AppNavigator';
 import { setNavigationRef, resetNavigationService } from './src/navigation/navigationService';
 
@@ -10,11 +10,20 @@ export default function App() {
   const navigationRef = useRef(null);
   const routeNameRef = useRef(null);
 
+  // Helper function to extract the active route name from the state
+  const getActiveRouteName = (state) => {
+    if (!state || !state.routes) return null;
+    const route = state.routes[state.index];
+    if (route.state) {
+      return getActiveRouteName(route.state);
+    }
+    return route.name;
+  };
+
   useEffect(() => {
     console.log('📱 App component mounted');
     return () => {
       console.log('📱 App component unmounted');
-      // Reset navigation service when app unmounts
       resetNavigationService();
     };
   }, []);
@@ -25,28 +34,21 @@ export default function App() {
         <PaperProvider>
           <NavigationContainer 
             ref={navigationRef}
-            fallback={null}
             onReady={() => {
-              console.log('🎯 NavigationContainer onReady called');
+              console.log('🎯 NavigationContainer onReady');
+              // Sync the ref to the service immediately
               setNavigationRef(navigationRef);
-              routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
+              
+              // Initialize current route name
+              const state = navigationRef.current?.getRootState();
+              routeNameRef.current = getActiveRouteName(state);
             }}
             onStateChange={() => {
+              const previousRouteName = routeNameRef.current;
               const state = navigationRef.current?.getRootState();
-              
-              const getCurrentRouteName = (state) => {
-                const route = state?.routes[state?.index];
-                
-                if (route?.state) {
-                  return getCurrentRouteName(route.state);
-                }
-                
-                return route?.name;
-              };
-              
-              const currentRouteName = getCurrentRouteName(state);
-              
-              if (routeNameRef.current !== currentRouteName) {
+              const currentRouteName = getActiveRouteName(state);
+
+              if (previousRouteName !== currentRouteName) {
                 console.log('📊 Navigation state changed:', currentRouteName);
                 routeNameRef.current = currentRouteName;
               }
