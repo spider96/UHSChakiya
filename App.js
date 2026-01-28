@@ -1,49 +1,45 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AuthProvider } from './src/auth/AuthContext';
 import AppNavigator from './src/navigation/AppNavigator';
-import { setNavigationRef, resetNavigationService } from './src/navigation/navigationService';
+import { setNavigationRef } from './src/navigation/navigationService';
 
 export default function App() {
   const navigationRef = useRef(null);
   const routeNameRef = useRef(null);
 
-  useEffect(() => {
-    console.log('📱 App component mounted');
-    return () => {
-      console.log('📱 App component unmounted');
-      // Reset navigation service when app unmounts
-      resetNavigationService();
-    };
-  }, []);
-
   return (
     <AuthProvider>
       <SafeAreaProvider>
+        
         <PaperProvider>
-          <NavigationContainer 
+          {/* <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}> */}
+          <NavigationContainer
             ref={navigationRef}
             fallback={null}
             onReady={() => {
               console.log('🎯 NavigationContainer onReady called');
               setNavigationRef(navigationRef);
-              routeNameRef.current = navigationRef.current?.getCurrentRoute()?.name;
+              routeNameRef.current =
+                navigationRef.current?.getCurrentRoute()?.name;
             }}
-            onStateChange={() => {
-              const state = navigationRef.current?.getRootState();
-              
-              const getCurrentRouteName = (state) => {
-                const route = state?.routes[state?.index];
-                
-                if (route?.state) {
+            onStateChange={state => {
+              const getCurrentRouteName = navState => {
+                if (!navState) {
+                  return null;
+                }
+                const route = navState.routes[navState.index];
+
+                // Recursively find the active route
+                if (route.state) {
                   return getCurrentRouteName(route.state);
                 }
-                
-                return route?.name;
+
+                return route.name;
               };
-              
+
               const currentRouteName = getCurrentRouteName(state);
               
               if (routeNameRef.current !== currentRouteName) {
@@ -54,7 +50,9 @@ export default function App() {
           >
             <AppNavigator navigationRef={navigationRef} />
           </NavigationContainer>
+           {/* </SafeAreaView> */}
         </PaperProvider>
+       
       </SafeAreaProvider>
     </AuthProvider>
   );
