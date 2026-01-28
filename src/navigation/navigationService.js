@@ -1,88 +1,73 @@
-// Global navigation service to handle navigation from anywhere in the app
-let navigationRef = null;
-let navigationReady = false;
+// d:\projects\schoolMngUI\UHSChakiya\src\navigation\navigationService.js
+import { CommonActions } from '@react-navigation/native';
 
-export const setNavigationRef = (ref) => {
-  console.log('🚀 Setting navigation ref...');
-  navigationRef = ref;
-  navigationReady = true;
-  console.log('🚀 Navigation ref set globally - READY', ref?.current ? '✅' : '❌');
-};
+let _navigator = null;
+let _isReady = false;
+let _actionQueue = [];
 
-export const resetNavigationService = () => {
-  console.log('🔄 Resetting navigation service');
-  navigationRef = null;
-  navigationReady = false;
-};
-
-export const isNavigationReady = () => {
-  const ready = navigationReady && navigationRef?.current;
-  console.log('⏳ Is navigation ready?', ready);
-  return ready;
-};
-
-const getCurrentRoute = () => {
-  const state = navigationRef?.current?.getRootState();
-  if (!state) return null;
-  
-  let route = state.routes[state.index];
-  
-  while (route.state) {
-    route = route.state.routes[route.state.index];
-  }
-  
-  return route?.name;
-};
-
-export const navigate = (name, params) => {
-  console.log('📍 Navigate called:', name);
-  console.log('🔍 navigationRef:', navigationRef ? '✅ exists' : '❌ null');
-  console.log('🔍 navigationRef.current:', navigationRef?.current ? '✅ exists' : '❌ null');
-  
-  if (!navigationRef?.current) {
-    console.warn('❌ Navigation ref is null, retrying in 300ms...');
-    setTimeout(() => navigate(name, params), 300);
-    return;
-  }
-
-  try {
-    const currentRoute = getCurrentRoute();
-    console.log('➡️ Current route:', currentRoute, '-> Target route:', name);
+/**
+ * Sets the top-level navigator object.
+ * This should be called in `onReady` of the NavigationContainer.
+ * It also processes any navigation actions that were queued before the navigator was ready.
+ * @param {object} navigatorRef - The navigation container ref object from React.useRef().
+ */
+function setNavigationRef(navigatorRef) {
+  if (navigatorRef && navigatorRef.current) {
+    _navigator = navigatorRef.current;
+    _isReady = true;
     
-    // If we're already at the target route, don't navigate
-    if (currentRoute === name) {
-      console.log('✅ Already at', name);
-      return;
+    // Process any queued actions
+    if (_actionQueue.length > 0) {
+        console.log(`🚀 Navigator is ready. Processing ${_actionQueue.length} queued actions.`);
+        _actionQueue.forEach(action => _navigator.dispatch(action));
+        _actionQueue = []; // Clear the queue
     }
-    
-    navigationRef.current.navigate(name, params);
-    console.log('✅ Navigated to:', name);
-  } catch (error) {
-    console.error('❌ Navigation error:', error);
-    console.error('❌ Error message:', error.message);
-    setTimeout(() => navigate(name, params), 300);
   }
-};
+}
 
-export const goHome = () => {
-  console.log('🏠 Going home');
-  navigate('HOME');
-};
-
-export const goBack = () => {
-  console.log('⬅️ Going back');
-  if (!navigationRef?.current) {
-    console.warn('❌ Navigation ref is null');
-    return;
+/**
+ * Dispatches a navigation action. If the navigator is not ready,
+ * the action is queued and will be dispatched once the navigator is set.
+ * @param {function} actionCreator - A function that returns a navigation action object.
+ */
+function dispatch(actionCreator) {
+  const action = actionCreator();
+  if (_isReady && _navigator) {
+    _navigator.dispatch(action);
+  } else {
+    _actionQueue.push(action);
+    console.log('⏳ Navigation action queued. Navigator not ready yet.');
   }
+}
 
-  try {
-    if (navigationRef.current.canGoBack()) {
-      navigationRef.current.goBack();
-    } else {
-      console.log('⬅️ Cannot go back, at root');
-    }
-  } catch (error) {
-    console.error('❌ Go back error:', error);
-  }
-};
+/**
+ * Navigates to a specific route.
+ * @param {string} routeName - The name of the route to navigate to.
+ * @param {object} [params] - Parameters to pass to the route.
+ */
+export function navigate(routeName, params) {
+  dispatch(() => CommonActions.navigate({ name: routeName, params }));
+}
+
+/**
+ * Navigates back to the home screen, resetting the stack.
+ */
+export function goHome() {
+    dispatch(() => CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'HOME' }],
+    }));
+}
+
+/**
+ * Resets the navigation service state. Should be called when the app is unmounted.
+ */
+export function resetNavigationService() {
+  _navigator = null;
+  _isReady = false;
+  _actionQueue = [];
+  console.log('🧹 Navigation service has been reset.');
+}
+
+// Export the functions that will be used externally, keeping the names consistent with App.js
+export { setNavigationRef };

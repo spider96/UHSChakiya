@@ -7,20 +7,16 @@ export function useExitOnBack() {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        Alert.alert(
-          'Exit App',
-          'Do you want to exit the app?',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Exit', onPress: () => BackHandler.exitApp() },
-          ]
-        );
-        return true; // prevent default behavior
+        Alert.alert('Exit App', 'Are you sure you want to exit?', [
+          { text: 'Cancel', onPress: () => null, style: 'cancel' },
+          { text: 'YES', onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
       };
 
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => subscription.remove();
     }, [])
   );
 }
