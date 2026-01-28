@@ -4,7 +4,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthContext, AuthProvider } from './src/auth/AuthContext';
 import AppNavigator from './src/navigation/AppNavigator';
-import { setNavigationRef } from './src/navigation/navigationService';
+import { setNavigationRef,resetNavigationService } from './src/navigation/navigationService';
 
 export default function App() {
   const navigationRef = useRef(null);
