@@ -4,12 +4,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import StudentListScreen from '../screens/StudentListScreen';
 import AddStudentScreen from '../screens/AddStudentScreen';
 import StudentDetailScreen from '../screens/StudentDetailScreen';
+import StudentDashboard from '../screens/StudentDashboard'
 
 const Stack = createNativeStackNavigator();
 
 export default function StudentStackNavigator() {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="StudentList"
+        component={StudentDashboard}
+        options={{ title: 'Students Dashboard' }}
+      />
       <Stack.Screen
         name="StudentList"
         component={StudentListScreen}
