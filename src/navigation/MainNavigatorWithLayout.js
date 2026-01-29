@@ -6,15 +6,29 @@ import Header from '../screens/Header';
 import SideMenu from '../components/SideMenu';
 import MainNavigator from './MainNavigator';
 import HomeStyles from '../style/HomeStyles';
+import { navigate,goHome } from './navigationService';
 
 export default function MainNavigatorWithLayout({ navigationRef }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
 
+  // const handleLogout = async () => {
+  //   setIsMenuOpen(false);
+  //   try {
+  //     await logout();
+  //     Alert.alert("Session Ended", "Logged out successfully");
+  //   } catch (error) {
+  //     console.log("Logout Error", error);
+  //   }
+  // };
+
+
   const handleLogout = async () => {
     setIsMenuOpen(false);
     try {
       await logout();
+      console.log("NavigationRef on Logout:", navigationRef.current);
+      goHome();
       Alert.alert("Session Ended", "Logged out successfully");
     } catch (error) {
       console.log("Logout Error", error);
@@ -27,7 +41,7 @@ export default function MainNavigatorWithLayout({ navigationRef }) {
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
-      <Header 
+      <Header
         onMenuPress={() => setIsMenuOpen(true)}
       />
 
