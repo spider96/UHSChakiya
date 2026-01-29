@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { getUser, saveUser, removeUser } from '../utils/storage';
+import { goHome } from '../navigation/navigationService';
 
 export const AuthContext = createContext();
 
@@ -50,9 +51,9 @@ export const AuthProvider = ({ children }) => {
           [{ text: 'OK' }]
         );
       }
-
       await removeUser();
       setUser(null);
+      goHome();
 
     } catch (error) {
       console.error('Logout process error:', error);
