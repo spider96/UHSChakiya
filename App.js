@@ -20,13 +20,13 @@ export default function App() {
     return route.name;
   };
 
-  useEffect(() => {
-    console.log('📱 App component mounted');
-    return () => {
-      console.log('📱 App component unmounted');
-      resetNavigationService();
-    };
-  }, []);
+  // useEffect(() => {
+  //   console.log('📱 App component mounted');
+  //   return () => {
+  //     console.log('📱 App component unmounted');
+  //     resetNavigationService();
+  //   };
+  // }, []);
 
   return (
     <AuthProvider>

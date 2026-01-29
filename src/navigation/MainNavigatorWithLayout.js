@@ -6,7 +6,8 @@ import Header from '../screens/Header';
 import SideMenu from '../components/SideMenu';
 import MainNavigator from './MainNavigator';
 import HomeStyles from '../style/HomeStyles';
-import { navigate,goHome } from './navigationService';
+import { navigate, goHome } from './navigationService';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MainNavigatorWithLayout({ navigationRef }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,23 +42,25 @@ export default function MainNavigatorWithLayout({ navigationRef }) {
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
-      <Header
-        onMenuPress={() => setIsMenuOpen(true)}
-      />
+      <SafeAreaView edges={['top','bottom','right']} style={{ flex: 1, backgroundColor: "#004a99" }}>
+        <Header
+          onMenuPress={() => setIsMenuOpen(true)}
+        />
 
-      {/* Main Content */}
-      <View style={HomeStyles.contentArea}>
-        <MainNavigator />
-      </View>
+        {/* Main Content */}
+        <View style={HomeStyles.contentArea}>
+          <MainNavigator />
+        </View>
 
-      {/* Side Menu */}
-      <SideMenu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onLogout={handleLogout}
-        userRole={user?.role ?? USER_ROLES.GUEST}
-        userName={user?.name ?? "Guest User"}
-      />
+        {/* Side Menu */}
+        <SideMenu
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          onLogout={handleLogout}
+          userRole={user?.role ?? USER_ROLES.GUEST}
+          userName={user?.name ?? "Guest User"}
+        />
+      </SafeAreaView>
     </View>
   );
 }

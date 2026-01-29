@@ -8,7 +8,7 @@ import styles from '../style/HomeStyles';
 const Header = ({ onMenuPress }) => {
   return (
     <View edges={['top']} >
-      <StatusBar barStyle="light-content" backgroundColor="#004a99" />
+      {/* <StatusBar barStyle="light-content"/> */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View style={styles.logoContainer}>

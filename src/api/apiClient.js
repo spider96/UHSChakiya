@@ -34,7 +34,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     // If server says token is expired (401) or invalid (403)
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+    if (error.response && (error.response.status === 403)) {
       
       // 1. Clear storage and state across the whole app
       //await globalLogout();
@@ -46,15 +46,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// apiClient.interceptors.request.use(async config => {
-//   const user = await getUser();
-//   const token = user?.token;
-
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
 
 export default apiClient;

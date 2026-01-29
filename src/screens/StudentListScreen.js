@@ -13,8 +13,6 @@ import StudentListStyles from '../style/StudentListStyles';
 import SubHeader from '../components/SubHeader';
 import { getStudents } from '../services/studentService';
 import { getImage } from '../services/MediaService';
-//const [loading, setLoading] = useState(false);
-
 
 export default function StudentListScreen({ navigation }) {
   const [filterClass, setFilterClass] = useState('');
@@ -345,7 +343,7 @@ export default function StudentListScreen({ navigation }) {
           <View style={StudentListStyles.filterRow}>
             <TextInput
               style={[StudentListStyles.filterInput, { flex: 1 }]}
-              placeholder="Filter by class (e.g., 10-A)"
+              placeholder="Filter by class"
               placeholderTextColor="#999"
               value={filterClass}
               onChangeText={setFilterClass}

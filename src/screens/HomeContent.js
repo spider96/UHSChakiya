@@ -185,7 +185,7 @@ const HomeContent = ({ navigation }) => {
           <FacultyCard name="Mr. R.K. Singh" role="English | 10 Years" />
         </ScrollView>
 
-        <View style={{height: 40}} />
+      {/* <View style={{height: 40}} /> */}
       </ScrollView>
   );
 };
