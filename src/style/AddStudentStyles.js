@@ -50,7 +50,7 @@ const AddStudentStyles = StyleSheet.create({
     paddingBottom: 8,
   },
   formGroup: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   label: {
     fontSize: 13,
@@ -73,7 +73,7 @@ const AddStudentStyles = StyleSheet.create({
     minHeight: 100,
     paddingVertical: 10,
     textAlignVertical: 'top',
-    marginBottom: 50,
+    //marginBottom: 10,
   },
   inputFocused: {
     borderColor: '#004a99',

@@ -17,12 +17,14 @@ import SubHeader from '../components/SubHeader';
 import DropdownComponent from '../components/Dropdown';
 import { getImage } from '../services/MediaService';
 import { handleImageUpload } from '../utils/utils';
-import { getSchoolClasses } from '../services/classService';
+import useSchoolClasses from '../services/classService';
 import DatePickerInput from '../components/DatePickerInput';
 
 import { Import } from 'lucide-react-native';
 
 export default function AddStudentScreen({ navigation }) {
+
+  const { getSchoolClasses, addSchoolClass } = useSchoolClasses();
 
   const hideDatePicker = () => setDatePickerVisibility(false);
 
@@ -78,7 +80,7 @@ export default function AddStudentScreen({ navigation }) {
     const loadSchoolClasses = async () => {
       setLoading(true);
       try {
-        const response = await getSchoolClasses(2); // API call
+        const response = await getSchoolClasses(); // API call
         setschoolClasses(response || []);          // safe fallback
       } catch (error) {
         console.error('Failed to load students:', error);
@@ -155,26 +157,28 @@ export default function AddStudentScreen({ navigation }) {
       }));
     }
   };
-  
+
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!student.name.trim()) {
-      newErrors.name = 'Student name is required';
-    }
+    if (!student.name?.trim()) newErrors.name = 'Student name is required';
+    if (!student.fatherName?.trim()) newErrors.fatherName = "Father's name is required";
+    if (!student.motherName?.trim()) newErrors.motherName = "Mother's name is required";
+    if (!student.mobileNumber?.trim()) newErrors.mobileNumber = 'Mobile number is required';
+    if (!student.email?.trim()) newErrors.email = 'Email is required';
+    if (!student.studentAddress?.trim()) newErrors.studentAddress = 'Address is required';
+    if (!student.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
+    if (!student.gender?.trim()) newErrors.gender = 'Gender is required';
+    if (!student.session) newErrors.session = 'Session is required';
+    if (!student.className?.trim()) newErrors.className = 'Class is required';
+    if (!student.schoolClassId) newErrors.section = 'Section is required';     // ← using ID
+    if (!student.rollNumber?.trim()) newErrors.rollNumber = 'Roll number is required';
+    if (!student.dateOfAdmission) newErrors.dateOfAdmission = 'Admission date is required';
+    if (!student.admissionNumber?.trim()) newErrors.admissionNumber = 'Admission number is required';
 
-    if (!student.fatherName.trim()) {
-      newErrors.fatherName = "Father's name is required";
-    }
-
-    if (!student.className.trim()) {
-      newErrors.className = 'Class is required';
-    }
-
-    if (!student.rollNumber.trim()) {
-      newErrors.rollNumber = 'Roll number is required';
-    }
+    // Optional – banking if really mandatory
+    // if (!student.accountNo?.trim())        newErrors.accountNo = 'Account number is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -388,10 +392,6 @@ export default function AddStudentScreen({ navigation }) {
                   error={errors.dateOfBirth}
                   placeholder="YYYY-MM-DD"
                 />
-
-                {errors.dateOfBirth && (
-                  <Text style={AddStudentStyles.errorText}>{errors.dateOfBirth}</Text>
-                )}
               </View>
             </View>
 
@@ -493,7 +493,7 @@ export default function AddStudentScreen({ navigation }) {
 
 
             {/* Academic Information Section */}
-            <Text style={[AddStudentStyles.sectionTitle, { marginTop: 20 }]}>
+            <Text style={[AddStudentStyles.sectionTitle, { marginTop: 60 }]}>
               Academic Information
             </Text>
 
@@ -600,11 +600,6 @@ export default function AddStudentScreen({ navigation }) {
                   error={errors.dateOfAdmission}
                   placeholder="YYYY-MM-DD"
                 />
-
-                {errors.dateOfAdmission && (
-                  <Text style={AddStudentStyles.errorText}>{errors.dateOfAdmission}</Text>
-                )}
-
               </View>
 
               <View style={[AddStudentStyles.formGroup, AddStudentStyles.halfInput]}>
@@ -665,7 +660,7 @@ export default function AddStudentScreen({ navigation }) {
 
 
             {/* Banking Information Section */}
-            <Text style={[AddStudentStyles.sectionTitle, { marginTop: 20 }]}>
+            <Text style={[AddStudentStyles.sectionTitle, { marginTop: 10 }]}>
               Banking Information
             </Text>
 
@@ -718,7 +713,7 @@ export default function AddStudentScreen({ navigation }) {
                 onChangeText={v => updateField('studentBankName', v)}
                 editable={!loading}
               />
-              {errors.email && (
+              {errors.studentBankName && (                          // ← corrected
                 <Text style={AddStudentStyles.errorText}>{errors.studentBankName}</Text>
               )}
             </View>
