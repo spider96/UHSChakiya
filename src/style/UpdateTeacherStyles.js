@@ -95,7 +95,8 @@ const UpdateTeacherStyles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'space-between',
+    gap: 10,
   },
   flex: {
     flex: 1,

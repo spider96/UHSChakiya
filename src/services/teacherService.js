@@ -65,7 +65,7 @@ export const getTeacherByUserId = async (userId) => {
       return DUMMY_TEACHER_DATA;
     }
 
-    const res = await apiClient.get(`/teachers/user/${userId}`);
+    const res = await apiClient.get(`/user-profiles/user/${userId}`);
     return res.data;
   } catch (error) {
     console.error('Error fetching teacher by user ID:', error);

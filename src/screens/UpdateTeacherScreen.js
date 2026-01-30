@@ -348,14 +348,6 @@ export default function UpdateTeacherScreen({ navigation }) {
                 <View style={UpdateTeacherStyles.rowContainer}>
                   <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
                     <Text style={UpdateTeacherStyles.label}>Date of Birth</Text>
-                    {/* <TextInput
-                      style={UpdateTeacherStyles.input}
-                      placeholder="YYYY-MM-DD"
-                      value={formData.dateOfBirth}
-                      onChangeText={(v) => updateField('dateOfBirth', v)}
-                      editable={!isSaving}
-                    /> */}
-
                     <DatePickerInput
                       label="Date Of Birth *"
                       value={formData.dateOfBirth}
@@ -378,26 +370,29 @@ export default function UpdateTeacherScreen({ navigation }) {
                   </View>
                 </View>
 
-                <View style={UpdateTeacherStyles.fieldGroup}>
-                  <Text style={UpdateTeacherStyles.label}>Gender</Text>
-                  <TextInput
-                    style={UpdateTeacherStyles.input}
-                    placeholder="MALE / FEMALE / OTHER"
-                    value={formData.gender}
-                    onChangeText={(v) => updateField('gender', v)}
-                    editable={!isSaving}
-                  />
-                </View>
+                <View style={UpdateTeacherStyles.rowContainer}>
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Gender *</Text>
+                    <TextInput
+                      style={UpdateTeacherStyles.input}
+                      placeholder="MALE / FEMALE / OTHER"
+                      value={formData.gender}
+                      onChangeText={(v) => updateField('gender', v)}
+                      editable={!isSaving}
+                    />
 
-                <View style={UpdateTeacherStyles.fieldGroup}>
-                  <Text style={UpdateTeacherStyles.label}>Religion</Text>
-                  <TextInput
-                    style={UpdateTeacherStyles.input}
-                    placeholder="Hindu / Muslim / etc."
-                    value={formData.religion}
-                    onChangeText={(v) => updateField('religion', v)}
-                    editable={!isSaving}
-                  />
+                  </View>
+
+                  <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
+                    <Text style={UpdateTeacherStyles.label}>Religion *</Text>
+                    <TextInput
+                      style={UpdateTeacherStyles.input}
+                      placeholder="Hindu / Muslim / etc."
+                      value={formData.religion}
+                      onChangeText={(v) => updateField('religion', v)}
+                      editable={!isSaving}
+                    />
+                  </View>
                 </View>
 
                 <View style={UpdateTeacherStyles.fieldGroup}>
@@ -482,10 +477,10 @@ export default function UpdateTeacherScreen({ navigation }) {
                   />
                   {errors.email && <Text style={UpdateTeacherStyles.errorText}>{errors.email}</Text>}
                 </View>
-              </View>
 
-              {/* PROFESSIONAL INFORMATION */}
-              <View style={UpdateTeacherStyles.formCard}>
+
+
+
                 <Text style={UpdateTeacherStyles.sectionTitle}>Professional Information</Text>
 
                 <View style={UpdateTeacherStyles.fieldGroup}>
@@ -524,14 +519,6 @@ export default function UpdateTeacherScreen({ navigation }) {
 
                   <View style={[UpdateTeacherStyles.fieldGroup, UpdateTeacherStyles.flex]}>
                     <Text style={UpdateTeacherStyles.label}>Date of Joining</Text>
-                    {/* <TextInput
-                      style={UpdateTeacherStyles.input}
-                      placeholder="YYYY-MM-DD"
-                      value={formData.dateOfJoiningService}
-                      onChangeText={(v) => updateField('dateOfJoiningService', v)}
-                      editable={!isSaving}
-                    /> */}
-
                     <DatePickerInput
                       label="Date of Joining *"
                       value={formData.dateOfJoiningService}
@@ -539,8 +526,6 @@ export default function UpdateTeacherScreen({ navigation }) {
                       error={errors.dateOfJoiningService}
                       placeholder="YYYY-MM-DD"
                     />
-
-
                   </View>
                 </View>
 
@@ -667,10 +652,8 @@ export default function UpdateTeacherScreen({ navigation }) {
                     />
                   </View>
                 </View>
-              </View>
 
-              {/* CONTACT DETAILS */}
-              <View style={UpdateTeacherStyles.formCard}>
+
                 <Text style={UpdateTeacherStyles.sectionTitle}>Contact Details</Text>
 
                 <View style={UpdateTeacherStyles.fieldGroup}>
