@@ -109,12 +109,12 @@ const UpdateTeacherStyles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 8,
+    borderRadius: 5,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 14,
     color: '#333',
-    backgroundColor: '#fff',
+   backgroundColor: '#f9f9f9',
   },
   multilineInput: {
     minHeight: 100,
@@ -175,6 +175,7 @@ const UpdateTeacherStyles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 14,
     color: '#333',
+    backgroundColor: '#f9f9f9',
   },
   searchButtonContainer: {
     marginTop: 12,
@@ -223,6 +224,16 @@ const UpdateTeacherStyles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
+  inputError: {
+  borderColor: '#d32f2f',
+  borderWidth: 1.5,
+},
+errorText: {
+  color: '#d32f2f',
+  fontSize: 11,
+  marginTop: 4,
+  fontWeight: '500',
+},
 });
 
 export default UpdateTeacherStyles;
