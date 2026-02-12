@@ -13,13 +13,13 @@ export default function useSchoolClasses() {
   }
 
   const schoolId = user?.schoolId || null;
-  const baseUrl = schoolId ? `schools/${schoolId}/classes` : null;
+  const baseUrl = schoolId ? `schools/${schoolId}/classes/active` : null;
 
   const getSchoolClasses = async () => {
     if (!baseUrl) throw new Error("Cannot fetch classes — no school selected");
     try {
       const res = await apiClient.get(baseUrl);
-      return res.data || [];
+      return res.data.data || [];
     } catch (err) {
       console.error("getSchoolClasses failed:", err);
       throw err;

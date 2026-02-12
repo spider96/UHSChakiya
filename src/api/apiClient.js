@@ -5,8 +5,9 @@ import { getUser } from '../utils/storage';
 const apiClient = axios.create({
   //baseURL: 'http://10.0.2.2:8080/api', // change if needed
   //baseURL: 'http://192.168.219.127:8080/api', // change if needed
- // baseURL: 'http://10.54.165.127:8080/api', // change if needed
+  // baseURL: 'http://10.54.165.127:8080/api', // change if needed
    baseURL: 'http://192.168.31.228:8080/api', // change if needed
+ //   baseURL: 'http://192.168.31.227:8080/api', // change if needed
  // baseURL: 'http://192.168.1.2:8080/api', // change if needed
   headers: {
     'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     // If server says token is expired (401) or invalid (403)
-    if (error.response && (error.response.status === 403)) {
+    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
       
       // 1. Clear storage and state across the whole app
       //await globalLogout();

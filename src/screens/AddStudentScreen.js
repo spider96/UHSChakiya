@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
+import { AuthContext } from '../auth/AuthContext';
 import {
   View,
   ScrollView,
@@ -11,7 +12,7 @@ import {
   Alert,
 } from 'react-native';
 
-import { addStudent } from '../services/studentService';
+import useSchoolStudents from '../services/studentService';
 import AddStudentStyles from '../style/AddStudentStyles';
 import SubHeader from '../components/SubHeader';
 import DropdownComponent from '../components/Dropdown';
@@ -24,12 +25,14 @@ import { Import } from 'lucide-react-native';
 
 export default function AddStudentScreen({ navigation }) {
 
-  const { getSchoolClasses, addSchoolClass } = useSchoolClasses();
+  const { getSchoolClasses} = useSchoolClasses();
+  const {addStudent} = useSchoolStudents();
+  const { user } = useContext(AuthContext);
 
   const hideDatePicker = () => setDatePickerVisibility(false);
 
   const [student, setStudent] = useState({
-    schoolId: 1,
+    schoolId: user?.schoolId || null,
     //personal    
     isAadhar: true,
     aadharNumber: '',

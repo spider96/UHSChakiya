@@ -13,6 +13,7 @@ import StudentListStyles from '../style/StudentListStyles';
 import SubHeader from '../components/SubHeader';
 import { getStudents } from '../services/studentService';
 import { getImage } from '../services/MediaService';
+import useSchoolStudents from '../services/studentService';
 
 export default function StudentListScreen({ navigation }) {
   const [filterClass, setFilterClass] = useState('');
@@ -22,6 +23,7 @@ export default function StudentListScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [dispImage, setDispImage] = useState(null);
+  const { getStudents } = useSchoolStudents();
 
 
 
