@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../auth/AuthContext';
 import {
   View,
@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  Alert,
 } from 'react-native';
 
 import useSchoolStudents from '../services/studentService';
@@ -21,63 +20,126 @@ import { handleImageUpload } from '../utils/utils';
 import useSchoolClasses from '../services/classService';
 import DatePickerInput from '../components/DatePickerInput';
 
-import { Import } from 'lucide-react-native';
+const getInitialStudent = (schoolId) => ({
+  schoolId: schoolId || null,
+  // personal
+  isAadhar: true,
+  aadharNumber: '',
+  image: null,
+  name: '',
+  dateOfBirth: '',
+  fatherName: '',
+  motherName: '',
+  gender: '',
+  socialCategory: '',
+  religion: '',
+  studentAddress: '',
+  mobileNumber: '',
+  email: '',
+  // educational
+  session: '',
+  district: '',
+  block: '',
+  school: 'U',
+  schoolName: '',
+  schoolClassId: '',
+  className: '',
+  section: '',
+  admissionNumber: '',
+  dateOfAdmission: '',
+  rollNumber: '',
+  // financial
+  accountNo: '',
+  accountHolderName: '',
+  studentBankName: '',
+  ifsc: '',
+  // status
+  active: true,
+});
 
-export default function AddStudentScreen({ navigation }) {
+const normalizeId = (value) => {
+  if (value === null || value === undefined || value === '') return '';
+  const asNumber = Number(value);
+  return Number.isNaN(asNumber) ? value : asNumber;
+};
 
-  const { getSchoolClasses} = useSchoolClasses();
-  const {addStudent} = useSchoolStudents();
+export default function AddStudentScreen({ navigation, route }) {
+
+  const { getSchoolClasses } = useSchoolClasses();
+  const { addStudent, updateStudent } = useSchoolStudents();
   const { user } = useContext(AuthContext);
+  const existingStudent = route?.params?.student || null;
+  const isEditMode = Boolean(existingStudent);
 
-  const hideDatePicker = () => setDatePickerVisibility(false);
-
-  const [student, setStudent] = useState({
-    schoolId: user?.schoolId || null,
-    //personal    
-    isAadhar: true,
-    aadharNumber: '',
-    image: null,
-    name: '',
-    dateOfBirth: '',
-    fatherName: '',
-    motherName: '',
-    gender: '',
-    socialCategory: '',
-    religion: '',
-    studentAddress: '',
-    mobileNumber: '',
-    email: '',
-    //educational
-    session: '',
-    district: '',
-    block: '',
-    school: 'U',
-    schoolName: '',
-    schoolClassId: '',
-    className: '',
-    section: '',
-    admissionNumber: '',
-    dateOfAdmission: '',
-    rollNumber: '',
-    //finantial
-    accountNo: '',
-    accountHolderName: '',
-    studentBankName: '',
-    ifsc: '',
-    // status
-    active: true,
-  });
+  const [student, setStudent] = useState(getInitialStudent(user?.schoolId));
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(null);
+  const academicFieldsDisabled = isEditMode || loading;
   const [studentImage, setStudentImage] = useState(null);
-  const [schoolClasses, setschoolClasses] = useState(null)
+  const [schoolClasses, setschoolClasses] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
 
+  useEffect(() => {
+    if (!existingStudent) {
+      return;
+    }
 
+    const sectionId = normalizeId(
+      existingStudent.schoolClassId || existingStudent.sectionId || ''
+    );
+    setStudent(prev => ({
+      ...prev,
+      ...existingStudent,
+      schoolId: existingStudent.schoolId || prev.schoolId,
+      session: existingStudent.session || existingStudent.academicYear || '',
+      school: existingStudent.school || existingStudent.schoolName || prev.school,
+      schoolName: existingStudent.schoolName || existingStudent.school || '',
+      schoolClassId: sectionId,
+      section: sectionId || existingStudent.section || '',
+    }));
+
+    if (existingStudent.image) {
+      getImage(existingStudent.image)
+        .then(setStudentImage)
+        .catch(() => setStudentImage(existingStudent.image));
+    }
+  }, [existingStudent]);
+
+  useEffect(() => {
+    if (!isEditMode || !schoolClasses || !student.session || !student.className) {
+      return;
+    }
+
+    setStudent(prev => {
+      const hasValidId = schoolClasses.some(
+        item =>
+          item.academicYear === prev.session &&
+          item.className === prev.className &&
+          String(item.id) === String(prev.schoolClassId)
+      );
+
+      if (hasValidId) return prev;
+
+      const matchedBySection = schoolClasses.find(
+        item =>
+          item.academicYear === prev.session &&
+          item.className === prev.className &&
+          String(item.section) === String(existingStudent?.section)
+      );
+
+      if (!matchedBySection) return prev;
+
+      const resolvedId = normalizeId(matchedBySection.id);
+      return {
+        ...prev,
+        schoolClassId: resolvedId,
+        section: resolvedId,
+      };
+    });
+  }, [isEditMode, schoolClasses, student.session, student.className, existingStudent]);
 
   useEffect(() => {
     const loadSchoolClasses = async () => {
@@ -92,7 +154,7 @@ export default function AddStudentScreen({ navigation }) {
       }
     };
     loadSchoolClasses();
-  }, []);
+  }, [getSchoolClasses]);
 
   // 1. Extract Unique Sessions from raw API data
   useEffect(() => {
@@ -104,7 +166,7 @@ export default function AddStudentScreen({ navigation }) {
 
   // 2. When Session changes -> Filter Unique Classes
   useEffect(() => {
-    if (!student.session) {
+    if (!student.session || !schoolClasses) {
       setClasses([]);
       return;
     }
@@ -119,14 +181,17 @@ export default function AddStudentScreen({ navigation }) {
     }));
 
     setClasses(uniqueClasses);
-    // Reset downstream selections
     setSections([]);
-    setStudent(prev => ({ ...prev, className: '', section: '' }));
-  }, [student.session]);
+    setStudent(prev => {
+      const classStillValid = uniqueClasses.some(cls => cls.value === prev.className);
+      if (classStillValid) return prev;
+      return { ...prev, className: '', section: '', schoolClassId: '' };
+    });
+  }, [student.session, schoolClasses]);
 
   // 3. When Class changes -> Filter Sections
   useEffect(() => {
-    if (!student.className) {
+    if (!student.className || !schoolClasses) {
       setSections([]);
       return;
     }
@@ -143,8 +208,17 @@ export default function AddStudentScreen({ navigation }) {
       }));
 
     setSections(filteredSections);
-    setStudent(prev => ({ ...prev, section: '' }));
-  }, [student.className]);
+    setStudent(prev => {
+      const currentSectionId = prev.schoolClassId || prev.section;
+      const sectionStillValid = filteredSections.some(
+        item => String(item.value) === String(currentSectionId)
+      );
+      if (sectionStillValid) {
+        return { ...prev, section: currentSectionId, schoolClassId: currentSectionId };
+      }
+      return { ...prev, section: '', schoolClassId: '' };
+    });
+  }, [student.className, student.session, schoolClasses]);
 
 
   const updateField = (field, value) => {
@@ -194,11 +268,19 @@ export default function AddStudentScreen({ navigation }) {
 
     setLoading(true);
     try {
-      await addStudent(student);
+      if (isEditMode) {
+        await updateStudent(existingStudent?.id || existingStudent?.studentId, student);
+      } else {
+        await addStudent(student);
+      }
       navigation.pop();
     } catch (error) {
-      console.error('Error adding student:', error);
-      setErrors({ submit: 'Failed to add student. Please try again.' });
+      console.error(isEditMode ? 'Error updating student:' : 'Error adding student:', error);
+      setErrors({
+        submit: isEditMode
+          ? 'Failed to update student. Please try again.'
+          : 'Failed to add student. Please try again.',
+      });
     } finally {
       setLoading(false);
     }
@@ -211,6 +293,7 @@ export default function AddStudentScreen({ navigation }) {
 
   const removeImage = () => {
     setStudentImage(null);
+    setStudent(prev => ({ ...prev, image: null }));
   };
 
   return (
@@ -220,7 +303,7 @@ export default function AddStudentScreen({ navigation }) {
         style={AddStudentStyles.container}
       >
 
-        <SubHeader title="Add Student" />
+        <SubHeader title={isEditMode ? 'Edit Student' : 'Add Student'} />
 
         {/* Form Content */}
         <ScrollView
@@ -506,12 +589,13 @@ export default function AddStudentScreen({ navigation }) {
                 style={[
                   AddStudentStyles.input,
                   errors.district && AddStudentStyles.inputError,
+                  academicFieldsDisabled && AddStudentStyles.disabledInput,
                 ]}
                 placeholder="Enter District"
                 placeholderTextColor="#999"
                 value={student.district}
                 onChangeText={v => updateField('district', v)}
-                editable={!loading}
+                editable={!academicFieldsDisabled}
               />
               {errors.district && (
                 <Text style={AddStudentStyles.errorText}>{errors.district}</Text>
@@ -524,12 +608,13 @@ export default function AddStudentScreen({ navigation }) {
                 style={[
                   AddStudentStyles.input,
                   errors.block && AddStudentStyles.inputError,
+                  academicFieldsDisabled && AddStudentStyles.disabledInput,
                 ]}
                 placeholder="Enter Block"
                 placeholderTextColor="#999"
                 value={student.block}
                 onChangeText={v => updateField('block', v)}
-                editable={!loading}
+                editable={!academicFieldsDisabled}
               />
               {errors.block && (
                 <Text style={AddStudentStyles.errorText}>{errors.block}</Text>
@@ -542,12 +627,13 @@ export default function AddStudentScreen({ navigation }) {
                 style={[
                   AddStudentStyles.input,
                   errors.school && AddStudentStyles.inputError,
+                  academicFieldsDisabled && AddStudentStyles.disabledInput,
                 ]}
                 placeholder="Enter School Name"
                 placeholderTextColor="#999"
                 value={student.school}
                 onChangeText={v => updateField('school', v)}
-                editable={!loading}
+                editable={!academicFieldsDisabled}
               />
               {errors.school && (
                 <Text style={AddStudentStyles.errorText}>{errors.school}</Text>
@@ -564,6 +650,8 @@ export default function AddStudentScreen({ navigation }) {
                   placeholder="Select Session"
                   value={student.session}
                   onChange={(val) => updateField('session', val)}
+                  disable={academicFieldsDisabled}
+                  error={errors.session}
                 />
                 {errors.session && (
                   <Text style={AddStudentStyles.errorText}>{errors.session}</Text>
@@ -579,12 +667,13 @@ export default function AddStudentScreen({ navigation }) {
                   style={[
                     AddStudentStyles.input,
                     errors.admissionNumber && AddStudentStyles.inputError,
+                    academicFieldsDisabled && AddStudentStyles.disabledInput,
                   ]}
                   placeholder="e.g., 01/2026"
                   placeholderTextColor="#999"
                   value={student.admissionNumber}
                   onChangeText={v => updateField('admissionNumber', v)}
-                  editable={!loading}
+                  editable={!academicFieldsDisabled}
                   keyboardType="numeric"
                 />
                 {errors.admissionNumber && (
@@ -602,6 +691,7 @@ export default function AddStudentScreen({ navigation }) {
                   onChange={(val) => updateField('dateOfAdmission', val)}
                   error={errors.dateOfAdmission}
                   placeholder="YYYY-MM-DD"
+                  disabled={academicFieldsDisabled}
                 />
               </View>
 
@@ -612,7 +702,7 @@ export default function AddStudentScreen({ navigation }) {
                   placeholder={student.session ? "Select Class" : "Select Session First"}
                   value={student.className}
                   onChange={(val) => updateField('className', val)}
-                  disable={!student.session}
+                  disable={academicFieldsDisabled || !student.session}
                   error={errors.className}
                 />
                 {errors.className && (
@@ -627,13 +717,13 @@ export default function AddStudentScreen({ navigation }) {
                 <DropdownComponent
                   data={sections}
                   placeholder={student.className ? "Select Section" : "Select Class First"}
-                  value={student.section}
+                  value={student.schoolClassId || student.section}
                   onChange={(val) => {
                     updateField('section', val);
                     updateField('schoolClassId', val);
 
                   }}
-                  disable={!student.className}
+                  disable={academicFieldsDisabled || !student.className}
                   error={errors.className}
                 />
                 {errors.section && (
@@ -647,12 +737,13 @@ export default function AddStudentScreen({ navigation }) {
                   style={[
                     AddStudentStyles.input,
                     errors.rollNumber && AddStudentStyles.inputError,
+                    academicFieldsDisabled && AddStudentStyles.disabledInput,
                   ]}
                   placeholder="e.g. 25"
                   placeholderTextColor="#999"
                   value={student.rollNumber}
                   onChangeText={v => updateField('rollNumber', v)}
-                  editable={!loading}
+                  editable={!academicFieldsDisabled}
                   keyboardType="numeric"
                 />
                 {errors.rollNumber && (
@@ -768,7 +859,7 @@ export default function AddStudentScreen({ navigation }) {
                 disabled={loading}
               >
                 <Text style={AddStudentStyles.submitButtonText}>
-                  {loading ? 'Saving...' : 'Save Student'}
+                  {loading ? 'Saving...' : (isEditMode ? 'Update Student' : 'Save Student')}
                 </Text>
               </TouchableOpacity>
             </View>

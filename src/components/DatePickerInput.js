@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Calendar } from 'lucide-react-native';
 import AddStudentStyles from '../style/AddStudentStyles'; // Reuse your existing styles
@@ -10,7 +10,8 @@ const DatePickerInput = ({
     onChange,
     error,
     placeholder = "Select Date",
-    maximumDate = new Date()
+    maximumDate = new Date(),
+    disabled = false
 }) => {
     const [isPickerVisible, setPickerVisibility] = useState(false);
 
@@ -28,18 +29,22 @@ const DatePickerInput = ({
     return (
         <View>
             <TouchableOpacity
-                onPress={() => setPickerVisibility(true)}
+                onPress={() => {
+                    if (!disabled) setPickerVisibility(true);
+                }}
                 activeOpacity={0.7}
+                disabled={disabled}
                 style={[
                     AddStudentStyles.input,
                     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-                    error && AddStudentStyles.inputError
+                    error && AddStudentStyles.inputError,
+                    disabled && AddStudentStyles.disabledInput
                 ]}
             >
-                <Text style={{ color: value ? '#333' : '#999', fontSize: 14 }}>
+                <Text style={{ color: disabled ? '#5F6B7A' : (value ? '#333' : '#999'), fontSize: 14 }}>
                     {value || placeholder}
                 </Text>
-                <Calendar size={16} color="#2196F3" />
+                <Calendar size={16} color={disabled ? '#8D99A8' : '#2196F3'} />
             </TouchableOpacity>
 
             {error && (

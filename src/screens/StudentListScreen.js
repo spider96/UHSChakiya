@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import StudentListStyles from '../style/StudentListStyles';
 import SubHeader from '../components/SubHeader';
-import { getStudents } from '../services/studentService';
 import { getImage } from '../services/MediaService';
 import useSchoolStudents from '../services/studentService';
 
@@ -41,13 +40,13 @@ export default function StudentListScreen({ navigation }) {
     };
 
     loadStudents();
-  }, []);
+  }, [getStudents]);
 
 
 
   const classes = useMemo(() => {
     return [...new Set(students.map(s => s.className))].sort();
-  }, []);
+  }, [students]);
 
   const filteredStudents = useMemo(() => {
     return students.filter(student => {
@@ -70,11 +69,7 @@ export default function StudentListScreen({ navigation }) {
   };
 
   const handleEdit = student => {
-    Alert.alert(
-      'Edit Student',
-      `Editing ${student.name}`,
-      [{ text: 'OK', onPress: () => console.log('Edit:', student) }]
-    );
+    navigation.navigate('EDIT_STUDENT', { student });
   };
 
   const handleDelete = student => {

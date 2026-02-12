@@ -69,6 +69,11 @@ const AddStudentStyles = StyleSheet.create({
     color: '#333',
     backgroundColor: '#f9f9f9',
   },
+  disabledInput: {
+    backgroundColor: '#E9EEF5',
+    borderColor: '#C4CEDB',
+    color: '#5F6B7A',
+  },
   multilineInput: {
     minHeight: 100,
     paddingVertical: 10,

@@ -13,8 +13,14 @@ const DropdownComponent = ({ data, placeholder, value, onChange, labelField = "l
         error && styles.inputError, // 👈 Apply red border if error is true
         disable && styles.disabled
       ]}
-      placeholderStyle={styles.placeholderStyle}
-      selectedTextStyle={styles.selectedTextStyle}
+      placeholderStyle={[
+        styles.placeholderStyle,
+        disable && styles.disabledText,
+      ]}
+      selectedTextStyle={[
+        styles.selectedTextStyle,
+        disable && styles.disabledText,
+      ]}
       data={data}
       maxHeight={300}
       labelField={labelField}
@@ -47,7 +53,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   disabled: {
-    backgroundColor: '#F5F5F5',
-    opacity: 0.7,
-  }
+    backgroundColor: '#E9EEF5',
+    borderColor: '#C4CEDB',
+  },
+  disabledText: {
+    color: '#5F6B7A',
+  },
 });
